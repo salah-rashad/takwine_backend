@@ -1,7 +1,12 @@
+from datetime import datetime
+
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.db import models
 
-from ..courses.models import Course, Lesson, Material
+from apps.users.intermediates import (Rel_Enrollment_Lesson,
+                                      Rel_Enrollment_Material)
+
+from ..courses.models.material import Material
 from .managers import UserManager
 
 GENDER_CHOICES = (
@@ -16,13 +21,13 @@ class User(AbstractUser, PermissionsMixin):
 
     username = None
     email = models.EmailField(max_length=255, unique=True)
-    first_name = models.CharField(null=True, blank=True, max_length=255)
-    last_name = models.CharField(null=True, blank=True, max_length=255)
-    birthDate = models.DateField(null=True, blank=True, max_length=255)
+    first_name = models.CharField(null=False, blank=True, max_length=255)
+    last_name = models.CharField(null=False, blank=True, max_length=255)
+    birthDate = models.DateField(null=False, blank=False, default=datetime.now)
     imageUrl = models.CharField(null=True, blank=True, max_length=500)
-    phoneNumber = models.CharField(null=True, blank=True, max_length=255)
-    city = models.CharField(null=True, blank=True, max_length=255)
-    job = models.CharField(null=True, blank=True, max_length=255)
+    phoneNumber = models.CharField(null=False, blank=True, max_length=255)
+    city = models.CharField(null=False, blank=True, max_length=255)
+    job = models.CharField(null=False, blank=True, max_length=255)
     gender = models.CharField(choices=GENDER_CHOICES,
                               blank=True,
                               null=True,
@@ -38,20 +43,47 @@ class User(AbstractUser, PermissionsMixin):
         return self.email
 
 
-class EnrolledCourse(models.Model):
+class Enrollment(models.Model):
     class Meta:
-        db_table = "users_enrolled_courses"
-        verbose_name = 'Enrolled Course'
-        verbose_name_plural = 'Enrolled Courses'
+        db_table = "users_enrollments"
+        verbose_name = 'Enrollment'
+        verbose_name_plural = 'Enrollments'
+        unique_together = ('user', 'course',)
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True,)
-    course = models.OneToOneField(
-        Course, on_delete=models.CASCADE, null=True, blank=True, unique=True)
+    created_at = models.DateTimeField(default=datetime.now)
+    updated_at = models.DateTimeField(
+        default=datetime.now, null=False, blank=False)
+
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=False, blank=False)
+    course = models.ForeignKey(
+        "courses.Course", on_delete=models.CASCADE, null=False, blank=False)
+
     currentLesson = models.ForeignKey(
-        Lesson, on_delete=models.CASCADE, null=True,)
+        "courses.Lesson", on_delete=models.SET_NULL, null=True, blank=True)
     currentMaterial = models.ForeignKey(
-        Material, on_delete=models.CASCADE, null=True,)
-    progress = models.FloatField(null=False, blank=False, default=0.0)
+        Material, on_delete=models.SET_NULL, null=True, blank=True, db_column='currentMaterialId')
+
+    completeLessons = models.ManyToManyField(
+        "courses.Lesson",
+        related_name="enrollments",
+        blank=True,
+        through=Rel_Enrollment_Lesson,
+    )
+    completeMaterials = models.ManyToManyField(
+        Material,
+        related_name="enrollments",
+        blank=True,
+        through=Rel_Enrollment_Material,
+    )
+
+    def progress(self):
+        lessons = self.course.lessons.all()
+        complete = self.completeLessons.all()
+        return len(complete) * 100 / len(lessons)
+
+    def isComplete(self) -> bool:
+        return self.progress() == 100
 
     def __str__(self):
-        return self.course.title
+        return str(self.user) + "--" + str(self.course)

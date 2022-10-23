@@ -1,6 +1,11 @@
 from rest_framework import serializers
 
-from .models import User
+from apps.courses.models.material import Material
+from apps.courses.serializers import CourseSerializer, LessonSerializer
+
+from ..courses.models.course import Course
+from ..courses.models.lesson import Lesson
+from .models import Enrollment, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -31,3 +36,53 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+
+
+class EnrollmentSerializer(serializers.ModelSerializer):
+
+    # completeLessons = serializers.PrimaryKeyRelatedField(
+    #     read_only=True,
+    #     allow_null=True,
+    # )
+
+    # progress = serializers.SerializerMethodField("getProgress")
+    # isComplete = serializers.SerializerMethodField("getIsComplete")
+
+    class Meta:
+        model = Enrollment
+        fields = [
+            'id',
+            'created_at',
+            'course',
+            'currentLesson',
+            'currentMaterial',
+            'completeLessons',
+            # 'completeMaterials',
+            'progress',
+            'isComplete',
+        ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        # extra = {}
+
+        # converting "course" from id to actual Course object
+        course_id = data['course']
+        course = Course.objects.filter(id=course_id).first()
+
+        # converting "currentLesson" from id to actual Lesson object
+        currentLesson_id = data['currentLesson']
+        currentLesson = Lesson.objects.filter(id=currentLesson_id).first()
+
+        if course:
+            data.update({
+                "course": CourseSerializer(course).data
+            })
+        if currentLesson:
+            data.update({
+                "currentLesson": LessonSerializer(currentLesson).data
+            })
+
+        # data.update(extra)
+        return data

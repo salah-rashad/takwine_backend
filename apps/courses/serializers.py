@@ -1,7 +1,9 @@
-from unicodedata import category
 from rest_framework import serializers
 
-from .models import Course, CourseCategory
+from apps.courses.models.lesson import Lesson
+from apps.users.models import Enrollment
+
+from .models.course import Course, CourseCategory
 
 
 class CourseCategorySerializer(serializers.ModelSerializer):
@@ -14,18 +16,47 @@ class CourseSerializer(serializers.ModelSerializer):
     category = serializers.PrimaryKeyRelatedField(
         queryset=CourseCategory.objects.all())
 
+    # days = serializers.SerializerMethodField("calculateDays")
+    # totalEnrollments = serializers.SerializerMethodField(
+    #     "calculateTotalEnrollments")
+
     class Meta:
         model = Course
-        fields = "__all__"
+        fields = [
+            "id",
+            "title",
+            "description",
+            "category",
+            "imageUrl",
+            "pdfUrl",
+            "videoUrl",
+            "date",
+            "enabled",
+            "days",
+            "totalEnrollments",
+        ]
 
     def to_representation(self, instance):
-        ret = super().to_representation(instance)
+        data = super().to_representation(instance)
 
-        category_id = ret.pop('category', None)
+        category_id = data['category']
         category = CourseCategory.objects.filter(id=category_id).first()
         if category:
-            extra_ret = {
+            data.update({
                 "category": CourseCategorySerializer(category).data
-            }
-        ret.update(extra_ret)
-        return ret
+            })
+        return data
+
+    
+
+
+class LessonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lesson
+        fields = [
+            'id',
+            'title',
+            'description',
+            'ordering',
+            'days',
+        ]
