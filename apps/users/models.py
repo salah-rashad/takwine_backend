@@ -3,10 +3,9 @@ from datetime import datetime
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.db import models
 
-from apps.users.intermediates import (Rel_Enrollment_Lesson,
-                                      Rel_Enrollment_Material)
+from apps.users.intermediates import (CompleteLesson,
+                                      )
 
-from ..courses.models.material import Material
 from .managers import UserManager
 
 GENDER_CHOICES = (
@@ -62,28 +61,36 @@ class Enrollment(models.Model):
     currentLesson = models.ForeignKey(
         "courses.Lesson", on_delete=models.SET_NULL, null=True, blank=True)
     currentMaterial = models.ForeignKey(
-        Material, on_delete=models.SET_NULL, null=True, blank=True, db_column='currentMaterialId')
+        "courses.Material", on_delete=models.SET_NULL, null=True, blank=True, db_column='currentMaterialId')
 
-    completeLessons = models.ManyToManyField(
-        "courses.Lesson",
-        related_name="enrollments",
-        blank=True,
-        through=Rel_Enrollment_Lesson,
-    )
-    completeMaterials = models.ManyToManyField(
-        Material,
-        related_name="enrollments",
-        blank=True,
-        through=Rel_Enrollment_Material,
-    )
+    # completeLessons = models.ManyToManyField(
+    #     "courses.Lesson",
+    #     related_name="enrollments",
+    #     blank=True,
+    #     through=CompleteLesson,
+    # )
+    # completeMaterials = models.ManyToManyField(
+    #     "courses.Material",
+    #     related_name="enrollments",
+    #     blank=True,
+    #     through=Rel_Enrollment_Material,
+    # )
 
     def progress(self):
-        lessons = self.course.lessons.all()
-        complete = self.completeLessons.all()
-        return len(complete) * 100 / len(lessons)
+        lessons = self.course.lessons().all()
+        complete = self.completeLessons().all()
+
+        try:
+            return len(complete) * 100 / len(lessons)
+        except:
+            return 0.0
 
     def isComplete(self) -> bool:
         return self.progress() == 100
+
+    def completeLessons(self):
+        list = CompleteLesson.objects.filter(enrollment__id=self.id)
+        return list
 
     def __str__(self):
         return str(self.user) + "--" + str(self.course)

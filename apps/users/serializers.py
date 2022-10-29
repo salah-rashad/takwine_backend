@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from apps.courses.models.material import Material
 from apps.courses.serializers import CourseSerializer, LessonSerializer
+from apps.users.intermediates import CompleteLesson
 
 from ..courses.models.course import Course
 from ..courses.models.lesson import Lesson
@@ -55,9 +56,6 @@ class EnrollmentSerializer(serializers.ModelSerializer):
             'created_at',
             'course',
             'currentLesson',
-            'currentMaterial',
-            'completeLessons',
-            # 'completeMaterials',
             'progress',
             'isComplete',
         ]
@@ -86,3 +84,9 @@ class EnrollmentSerializer(serializers.ModelSerializer):
 
         # data.update(extra)
         return data
+
+
+class CompleteLessonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompleteLesson
+        fields = '__all__'

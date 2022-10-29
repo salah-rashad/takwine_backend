@@ -1,3 +1,11 @@
 {
-  "cSpell.words": ["adminsortable", "corsheaders", "simplejwt", "takwine"]
+  "cSpell.words": [
+    "adminsortable",
+    "corsheaders",
+    "markdownx",
+    "simplejwt",
+    "summernote",
+    "takwine"
+  ],
+  "window.zoomLevel": -1
 }

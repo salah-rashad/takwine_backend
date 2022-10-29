@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 from apps.courses.models.course import Course
 
 from apps.courses.models.lesson import Lesson
-from apps.users.intermediates import Rel_Enrollment_Lesson
+from apps.users.intermediates import CompleteLesson
 
 from .forms import UserChangeForm, UserCreationForm
 from .models import Enrollment, User
@@ -48,16 +48,16 @@ class UserAdmin(UserAdmin):
 
 
 class LessonInline(admin.TabularInline):
-    model = Enrollment.completeLessons.through
+    model = CompleteLesson
     extra = 0
 
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
         field = super().formfield_for_foreignkey(db_field, request, **kwargs)
 
         if db_field.name == 'lesson':
-            if request.course_id is not None:
+            if request.course is not None:
                 field.queryset = Course.objects.filter(
-                    id=request.course_id).get().lessons
+                    id=request.course.id).get().lessons()
             else:
                 field.queryset = field.queryset.none()
 
@@ -82,16 +82,13 @@ class EnrollmentAdmin(admin.ModelAdmin):
             "fields": ['user', 'course', 'currentLesson', 'currentMaterial', 'created_at', 'updated_at']
         }]
     ]
-
-    def get_readonly_fields(self, request, obj=None):
-        if obj:  # editing an existing object
-            return self.readonly_fields + ('user', 'course', 'currentLesson', 'currentMaterial')
-        return self.readonly_fields
+    readonly_fields = ['user', 'course', 'currentLesson',
+                       'currentMaterial', 'created_at', 'updated_at']
 
     def get_form(self, request, obj=None, **kwargs):
         # just save obj reference for future processing in Inline
         if obj:
-            request.course_id = obj.course.id
+            request.course = obj.course
         else:
-            request.course_id = None
+            request.course = None
         return super().get_form(request, obj, **kwargs)

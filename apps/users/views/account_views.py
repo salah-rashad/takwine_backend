@@ -1,4 +1,4 @@
-import json
+
 from django.contrib.auth.password_validation import validate_password
 from django.forms import ValidationError
 from rest_framework import generics, permissions, status
@@ -9,7 +9,8 @@ from utils.responses import *
 
 from ...courses.models.course import Course
 from ..models import Enrollment, User
-from ..serializers import EnrollmentSerializer, UserSerializer
+from ..serializers import (CompleteLessonSerializer, EnrollmentSerializer,
+                           UserSerializer)
 
 
 class ProfileView(APIView):
@@ -120,7 +121,7 @@ class EnrollmentsView(APIView):
         request.data["user"] = userId
 
         serializer = EnrollmentSerializer(data=request.data)
-        if (serializer.is_valid()):
+        if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -137,14 +138,13 @@ class SingleEnrollmentView(APIView):
         if type(token) is Response:
             return token
 
-        filter = Enrollment.objects.filter(
-            user__id=token['id'],
-            course__id=pk,
-        )
+        enrollment = Enrollment.objects.filter(
+            user=token['id'],
+            course=pk,
+        ).first()
 
-        if (filter.exists()):
-            obj = filter.first()
-            serializer = EnrollmentSerializer(obj)
+        if enrollment:
+            serializer = EnrollmentSerializer(enrollment)
             data = serializer.data
         else:
             data = None
@@ -203,3 +203,71 @@ class UserStatementsView(APIView):
 
     def getCertificatesRateAverage(self, userId) -> str:
         return "3.5/5"     # TODO:
+
+
+class CompleteLessonsView(APIView):
+    def get(self, request, pk):
+        token = getUserToken(request)
+
+        if type(token) is Response:
+            return token
+
+        enrollment = Enrollment.objects.filter(
+            user=token['id'],
+            course=pk,
+        ).first()
+
+        if enrollment:
+            list = enrollment.completeLessons()
+            serializer = CompleteLessonSerializer(list, many=True)
+            return Response(serializer.data)
+
+    def post(self, request, pk):
+        token = getUserToken(request)
+
+        if type(token) is Response:
+            return token
+
+        try:
+            lessonId = request.data['lesson']
+            result = request.data['result']
+        except:
+            raise
+
+        enrollment = Enrollment.objects.filter(
+            user=token['id'],
+            course=pk,
+        ).first()
+
+        if enrollment:
+            obj = enrollment.completeLessons().filter(lesson=lessonId).first()
+
+            if obj:
+                if obj.result == None:
+                    obj.result = result
+                    obj.save()
+                    return Response({
+                        "message": "Lesson added successfully"
+                    })
+                else:
+                    return Response({
+                        "message": "Lesson already added"
+                    })
+
+            request.data["enrollment"] = enrollment.id
+            serializer = CompleteLessonSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(
+            {
+                "message": "Error while updating enrollment lesson"
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )

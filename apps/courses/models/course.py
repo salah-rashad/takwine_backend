@@ -1,8 +1,7 @@
 from django.db import models
+from apps.courses.models.lesson import Lesson
 
 from apps.users.models import Enrollment
-
-from .intermediates import Rel_Course_Lesson
 
 from .course_category import CourseCategory
 
@@ -33,26 +32,24 @@ class Course(models.Model):
     videoUrl = models.CharField(null=False, blank=True, max_length=255)
     date = models.DateTimeField(null=False, blank=False, auto_now_add=True)
     enabled = models.BooleanField(default=True)
-    lessons = models.ManyToManyField(
-        to="courses.Lesson",
-        related_name="courses",
-        blank=True,
-        through=Rel_Course_Lesson,
-    )
 
     def days(self):
-        lessons = self.lessons.all()
+        lessons = self.lessons().all()
         days = 0
         for lesson in lessons:
             days += lesson.days
         return days
 
     def lessons_count(self):
-        return len(self.lessons.all())
+        return len(self.lessons().all())
 
     def totalEnrollments(self):
         enrollments = Enrollment.objects.filter(course__id=self.id)
         return enrollments.count()
+
+    def lessons(self):
+        list = Lesson.objects.filter(course__id=self.id).order_by("ordering")
+        return list
 
     def __str__(self):
         return str(self.title)
