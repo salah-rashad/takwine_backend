@@ -7,7 +7,7 @@ from apps.courses.models.lesson import Lesson
 from apps.users.intermediates import CompleteLesson
 
 from .forms import UserChangeForm, UserCreationForm
-from .models import Enrollment, User
+from .models import Certificate, Enrollment, User
 
 
 @admin.register(User)
@@ -92,3 +92,8 @@ class EnrollmentAdmin(admin.ModelAdmin):
         else:
             request.course = None
         return super().get_form(request, obj, **kwargs)
+
+
+@admin.register(Certificate)
+class CertificateAdmin(admin.ModelAdmin):
+    pass

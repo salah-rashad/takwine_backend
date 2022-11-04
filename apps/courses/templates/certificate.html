@@ -1,0 +1,147 @@
+{% load static %}
+
+<html>
+  <head>
+    <title>Certificate</title>
+    {% comment %}
+    <link
+      rel="stylesheet/less"
+      type="text/css"
+      href="{% static 'css/styles.less'|compile %}"
+    />
+    {% endcomment %}
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+    />
+
+    {% comment %}
+    <script src="{% static 'js/less.js' %}"></script>
+    {% endcomment %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </head>
+
+  <body>
+    <div class="container-fluid pm-certificate-container">
+      <div class="outer-border"></div>
+      <div class="inner-border"></div>
+
+      <div class="pm-certificate-border col-xs-12">
+        <div class="row pm-certificate-header">
+          <div class="pm-certificate-title almarai col-xs-12 text-center">
+            <h2>شهادة إتمام منصة تكوين</h2>
+          </div>
+        </div>
+
+        <div class="row pm-certificate-body">
+          <div class="pm-certificate-block">
+            <div class="col-xs-12">
+              <div class="row">
+                <div class="col-xs-2">
+                  <!-- LEAVE EMPTY -->
+                </div>
+                <div
+                  class="pm-certificate-name underline margin-0 col-xs-8 text-center"
+                >
+                  <span class="pm-name-text bold ruqaa"> {{ user_name }} </span>
+                </div>
+                <div class="col-xs-2">
+                  <!-- LEAVE EMPTY -->
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xs-12">
+              <div class="row">
+                <div class="col-xs-2">
+                  <!-- LEAVE EMPTY -->
+                </div>
+                <div class="pm-earned col-xs-8 text-center">
+                  <span class="pm-earned-text padding-0 block almarai">
+                    قد نجح بنسبة
+                  </span>
+                  <span class="pm-credits-text block bold sans">
+                    {{ result }}%
+                  </span>
+                </div>
+                <div class="col-xs-2">
+                  <!-- LEAVE EMPTY -->
+                </div>
+                <div class="col-xs-12"></div>
+              </div>
+            </div>
+
+            <div class="col-xs-12">
+              <div class="row">
+                <div class="col-xs-2">
+                  <!-- LEAVE EMPTY -->
+                </div>
+                <div class="pm-course-title col-xs-8 text-center">
+                  <span class="pm-earned-text block almarai">
+                    في اختبار الدورة التدريبية
+                  </span>
+                </div>
+                <div class="col-xs-2">
+                  <!-- LEAVE EMPTY -->
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xs-12">
+              <div class="row">
+                <div class="col-xs-2">
+                  <!-- LEAVE EMPTY -->
+                </div>
+                <div class="pm-course-title underline col-xs-8 text-center">
+                  <span class="pm-credits-text block bold almarai">
+                    {{ course_title }}
+                  </span>
+                </div>
+                <div class="col-xs-2">
+                  <!-- LEAVE EMPTY -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <img
+            src="{{ media_path }}/certificate/stamp_logo_transparent.png"
+            class="stamp-image"
+          />
+
+          <div class="col-xs-12">
+            <div class="row">
+              <div class="pm-certificate-footer">
+                <div class="col-xs-4 pm-certified col-xs-4 text-center">
+                  <span class="block bold almarai"> توقيع </span>
+                  <div class="pm-empty-space">
+                    <span class="content-text bold block">
+                      <img
+                        src="{{ media_path }}/certificate/takwine_signature.png"
+                        class="signature-image"
+                      />
+                    </span>
+                  </div>
+                  <span class="block underline"></span>
+                </div>
+                <div class="col-xs-4">
+                  <!-- LEAVE EMPTY -->
+                </div>
+                <div class="col-xs-4 pm-certified col-xs-4 text-center">
+                  <span class="block bold almarai"> تاريخ إصدار الشهادة </span>
+                  <div class="pm-empty-space">
+                    <span class="content-text bold block ruqaa">
+                      {{ issue_date }}
+                    </span>
+                  </div>
+                  <span class="block underline"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

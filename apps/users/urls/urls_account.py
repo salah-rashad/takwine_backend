@@ -3,7 +3,7 @@ from django.urls import path
 from ..views.account_views import (ChangePasswordView, CompleteLessonsView,
                                    EnrollmentsView, LastActivityView,
                                    ProfileView, SingleEnrollmentView,
-                                   UpdateProfileImageView, UserStatementsView)
+                                   UpdateProfileImageView, UserStatementsView, CertificateView)
 
 # app_name = 'users'
 
@@ -16,4 +16,5 @@ urlpatterns = [
     path("enrollments/<int:pk>/complete-lessons", CompleteLessonsView.as_view()),
     path("enrollments/last-activity", LastActivityView.as_view()),
     path("statements", UserStatementsView.as_view()),
+    path("certificate/<int:pk>", CertificateView.as_view()),
 ]

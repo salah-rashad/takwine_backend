@@ -19,7 +19,8 @@ class Question(models.Model):
     exam = models.ForeignKey(
         "courses.Exam", on_delete=models.CASCADE, related_name="exam_questions")
 
-    title = models.CharField(null=False, blank=True, max_length=255)
+    title = models.CharField(null=True, blank=False,
+                             default=None, max_length=255)
     answer = models.ForeignKey(
         QuestionChoice,
         on_delete=models.RESTRICT,
@@ -30,8 +31,28 @@ class Question(models.Model):
 
     def choices(self):
         list = QuestionChoice.objects.filter(
-            question__id=self.id).order_by("ordering")
+            question=self).order_by("ordering")
         return list
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        answer = self.answer
+        choices = self.choices()
+
+        if choices:
+            if answer is None:
+                self.answer = choices.first()
+        else:
+            defaultChoice = QuestionChoice(name="choice 1", question=self)
+            defaultChoice.save()
+            self.answer = defaultChoice
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return self.title
+        try:
+            if self.answer:
+                return self.title
+            else:
+                return str("🛑 ") + str(self.title)
+        except:
+            return self.title

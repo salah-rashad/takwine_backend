@@ -1,7 +1,6 @@
 # from django.db import models
 
 
-
 # class MaterialAttachment(models.Model):
 #     class Meta:
 #         verbose_name = 'Attachment'
@@ -18,8 +17,8 @@
 
 #     material = models.ForeignKey("courses.Material", on_delete=models.CASCADE)
 
-#     name = models.CharField(null=False, blank=True, max_length=255)
-#     url = models.CharField(null=False, blank=True, max_length=255)
+#     name = models.CharField(null=True, blank=True, default=None, max_length=255)
+#     url = models.CharField(null=True, blank=True, default=None, max_length=255)
 #     date = models.DateTimeField(null=False, blank=False, auto_now_add=True)
 
 #     def __str__(self):

@@ -1,10 +1,10 @@
 from datetime import datetime
 
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from apps.users.intermediates import (CompleteLesson,
-                                      )
+from apps.users.intermediates import CompleteLesson
 
 from .managers import UserManager
 
@@ -20,13 +20,18 @@ class User(AbstractUser, PermissionsMixin):
 
     username = None
     email = models.EmailField(max_length=255, unique=True)
-    first_name = models.CharField(null=False, blank=True, max_length=255)
-    last_name = models.CharField(null=False, blank=True, max_length=255)
+    first_name = models.CharField(
+        null=True, blank=True, default=None, max_length=255)
+    last_name = models.CharField(
+        null=True, blank=True, default=None, max_length=255)
     birthDate = models.DateField(null=False, blank=False, default=datetime.now)
     imageUrl = models.CharField(null=True, blank=True, max_length=500)
-    phoneNumber = models.CharField(null=False, blank=True, max_length=255)
-    city = models.CharField(null=False, blank=True, max_length=255)
-    job = models.CharField(null=False, blank=True, max_length=255)
+    phoneNumber = models.CharField(
+        null=True, blank=True, default=None, max_length=255)
+    city = models.CharField(null=True, blank=False,
+                            default=None, max_length=255)
+    job = models.CharField(null=True, blank=False,
+                           default=None, max_length=255)
     gender = models.CharField(choices=GENDER_CHOICES,
                               blank=True,
                               null=True,
@@ -38,6 +43,9 @@ class User(AbstractUser, PermissionsMixin):
 
     objects = UserManager()
 
+    def getFullName(self):
+        return str(self.first_name) + " " + str(self.last_name)
+
     def __str__(self):
         return self.email
 
@@ -47,7 +55,7 @@ class Enrollment(models.Model):
         db_table = "users_enrollments"
         verbose_name = 'Enrollment'
         verbose_name_plural = 'Enrollments'
-        unique_together = ('user', 'course',)
+        unique_together = ['user', 'course']
 
     created_at = models.DateTimeField(default=datetime.now)
     updated_at = models.DateTimeField(
@@ -89,8 +97,39 @@ class Enrollment(models.Model):
         return self.progress() == 100
 
     def completeLessons(self):
-        list = CompleteLesson.objects.filter(enrollment__id=self.id)
+        list = CompleteLesson.objects.filter(enrollment=self)
         return list
+
+    def save(self, *args, **kwargs):
+        if self.currentLesson is None:
+            lessons = self.course.lessons()
+            if lessons:
+                self.currentLesson = lessons.first()
+
+        self.updated_at = datetime.now()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return str(self.user) + "--" + str(self.course)
+
+
+class Certificate(models.Model):
+    class Meta:
+        verbose_name = "Certificate"
+        verbose_name_plural = "Certificates"
+
+    user = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True)
+    course = models.ForeignKey(
+        "courses.Course", on_delete=models.SET_NULL, null=True, blank=True)
+    result = models.IntegerField(
+        default=70,
+        validators=[
+            MinValueValidator(70),
+            MaxValueValidator(100)
+        ]
+    )
+    issued_at = models.DateTimeField(null=False, blank=False, auto_now=True)
+
+    def __str__(self):
+        return str(self.user) + " | " + str(self.course)

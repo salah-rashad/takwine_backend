@@ -1,8 +1,8 @@
 from adminsortable2.admin import SortableAdminMixin, SortableStackedInline
-from django.contrib import admin
+from django.contrib import admin, messages
 from django_summernote.admin import SummernoteModelAdmin
-from apps.courses.forms import QuestionForm
 
+from apps.courses.forms import QuestionForm
 from apps.courses.models.exam import Exam
 from apps.courses.models.question import Question
 from apps.courses.models.question_choice import QuestionChoice
@@ -44,12 +44,11 @@ class LessonAdmin(SortableAdminMixin, admin.ModelAdmin):
         extra = 0
         show_change_link = True
         fieldsets = [[None, {"fields": ['title', 'ordering']}]]
-        readonly_fields = ['title']
         ordering = ['ordering']
 
     list_display = ['ordering', 'title', 'days',
                     'totalMaterialsCount', 'course', 'exam']
-    readonly_fields = ["exam"]
+    readonly_fields = ['exam']
     inlines = [MaterialStackedInline]
 
 #~~~~~~~~~~~~~~~~~~~~~~~ Material ~~~~~~~~~~~~~~~~~~~~~~~#
@@ -59,6 +58,7 @@ class LessonAdmin(SortableAdminMixin, admin.ModelAdmin):
 class MaterialAdmin(SortableAdminMixin, SummernoteModelAdmin):
     summernote_fields = ['content']
     list_display = ['ordering', 'id', 'title']
+    readonly_fields = ['lesson']
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~ Others ~~~~~~~~~~~~~~~~~~~~~~~#
@@ -86,7 +86,7 @@ class ExamAdmin(SortableAdminMixin, admin.ModelAdmin):
             [None, {"fields": ['title', 'ordering']}]]
         ordering = ['ordering']
 
-    list_display = ['id', 'lesson', 'ordering', ]
+    list_display = ['id', 'lesson', 'course', 'ordering', ]
     list_display_links = ['id', 'lesson']
     readonly_fields = ['lesson']
     inlines = [QuestionStackedInline]
@@ -96,6 +96,9 @@ class ExamAdmin(SortableAdminMixin, admin.ModelAdmin):
 class QuestionAdmin(SortableAdminMixin, admin.ModelAdmin):
     form = QuestionForm
     ordering = ['ordering']
+    # fieldsets = [
+    #     [None, {"fields": ['exam', 'title', 'answer']}]
+    # ]
 
     class ChoiceStackedInline(SortableStackedInline):
         model = QuestionChoice
@@ -105,4 +108,15 @@ class QuestionAdmin(SortableAdminMixin, admin.ModelAdmin):
             [None, {"fields": ['name', 'ordering']}]]
         ordering = ['ordering']
 
+    readonly_fields = ['exam']
     inlines = [ChoiceStackedInline]
+
+    def get_fields(self, request, obj=None):
+        fields = super().get_fields(request, obj)
+
+        if obj:
+            answer = obj.answer
+            if answer is None:
+                messages.add_message(request, messages.WARNING,
+                                     'Answer is not assigned')
+        return fields

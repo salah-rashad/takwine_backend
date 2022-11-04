@@ -16,7 +16,8 @@ class QuestionChoice(models.Model):
     )
 
     question = models.ForeignKey("courses.Question", on_delete=models.CASCADE)
-    name = models.CharField(null=False, blank=True, max_length=255)
+    name = models.CharField(null=True, blank=False,
+                            default=None, max_length=255)
 
     def __str__(self):
         return self.name

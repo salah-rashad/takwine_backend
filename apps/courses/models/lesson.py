@@ -18,8 +18,10 @@ class Lesson(models.Model):
     )
 
     course = models.ForeignKey("courses.Course", on_delete=models.CASCADE)
-    title = models.CharField(null=False, blank=True, max_length=255)
-    description = models.CharField(null=False, blank=True, max_length=255)
+    title = models.CharField(null=True, blank=False,
+                             default=None, max_length=255)
+    description = models.CharField(
+        null=True, blank=True, default=None, max_length=255)
     days = models.PositiveIntegerField(null=False, blank=False, default=1)
     exam = models.ForeignKey(
         Exam, on_delete=models.CASCADE, related_name="lessons", null=True)
@@ -33,7 +35,7 @@ class Lesson(models.Model):
     #     return list(map(lambda x: x.title, courses))
 
     def materials(self):
-        list = Material.objects.filter(lesson__id=self.id).order_by('ordering')
+        list = Material.objects.filter(lesson=self).order_by('ordering')
         return list
 
     def __str__(self):
@@ -48,4 +50,3 @@ class Lesson(models.Model):
             exam.save()
             self.exam = exam
             return super().save(*args, **kwargs)
-        

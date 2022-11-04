@@ -20,7 +20,7 @@
 #         null=False,
 #         db_index=True,
 #     )
-    
+
 #     material = models.ForeignKey("courses.Material", on_delete=models.CASCADE)
 
 #     type = models.CharField(
@@ -30,7 +30,7 @@
 #         default=COMPONENT_TYPE_CHOICES[0][0],
 #         max_length=50,
 #     )
-#     data = models.TextField(null=False, blank=True, max_length=550)
+#     data = models.TextField(null=True, blank=True, default=None, max_length=550)
 
 #     def __str__(self):
 #         return "{}: {}".format(self.type, self.data[0:30])

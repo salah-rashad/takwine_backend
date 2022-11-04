@@ -20,8 +20,11 @@ class Exam(models.Model):
         "courses.Lesson", on_delete=models.CASCADE, related_name="exams")
 
     def questions(self):
-        list = Question.objects.filter(exam__id=self.id).order_by("ordering")
+        list = Question.objects.filter(exam=self).order_by("ordering")
         return list
+
+    def course(self):
+        return self.lesson.course
 
     def __str__(self):
         return str(self.lesson.title)

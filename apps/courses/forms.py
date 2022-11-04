@@ -12,6 +12,15 @@ class QuestionForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if 'initial' in kwargs:
-            self.fields['answer'].queryset = QuestionChoice.objects.filter(
-                question=self.initial.question).order_by("ordering")
+        answer = self.instance.answer
+        answerField = self.fields['answer']
+
+        if answer is None:
+            answerField.help_text = "🛑 Answer is not assigned"
+
+        if answerField:
+            answerField.queryset = self.get_choices()
+
+    def get_choices(self):
+        return QuestionChoice.objects.filter(
+            question=self.instance).order_by("ordering")

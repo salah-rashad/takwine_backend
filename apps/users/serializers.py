@@ -54,6 +54,7 @@ class EnrollmentSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'created_at',
+            'user',
             'course',
             'currentLesson',
             'progress',

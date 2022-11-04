@@ -69,9 +69,9 @@ class LessonSerializer(serializers.ModelSerializer):
     def getActualOrder(self, instance: Lesson):
         lessons: list[Lesson] = instance.course.lessons()
 
-        for l in lessons:
-            if l.id == instance.id:
-                return indexOf(lessons, l)+1
+        for item in lessons:
+            if item == instance:
+                return indexOf(lessons, item) + 1
 
 
 class MaterialSerializer(serializers.ModelSerializer):
@@ -90,9 +90,9 @@ class MaterialSerializer(serializers.ModelSerializer):
     def getActualOrder(self, instance: Material):
         materials: list[Material] = instance.lesson.materials()
 
-        for m in materials:
-            if m.id == instance.id:
-                return indexOf(materials, m)+1
+        for item in materials:
+            if item == instance:
+                return indexOf(materials, item)+1
 
 
 class QuestionSerializer(serializers.ModelSerializer):

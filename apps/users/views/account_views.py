@@ -1,14 +1,19 @@
 
+from datetime import datetime
+import locale
+import os
+from django.conf import settings
 from django.contrib.auth.password_validation import validate_password
 from django.forms import ValidationError
+from django.http import HttpRequest, HttpResponse
+from django.views import View
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from utils.helpers import getUserToken
+from utils.render_to_pdf import render_to_pdf
 from utils.responses import *
-
-from ...courses.models.course import Course
-from ..models import Enrollment, User
+from ..models import Enrollment, User, Certificate
 from ..serializers import (CompleteLessonSerializer, EnrollmentSerializer,
                            UserSerializer)
 
@@ -55,7 +60,6 @@ class ChangePasswordView(APIView):
         try:
             validate_password(newPassword)
 
-            user = User.objects.filter(email=email).first()
             user.set_password(newPassword)
             user.save()
             return Response(
@@ -166,11 +170,31 @@ class LastActivityView(APIView):
             serializer = EnrollmentSerializer(lastActivity)
             return Response(serializer.data)
         else:
-            return Response(
-                {
-                    "message": "Last course activity not found."
-                }, status=status.HTTP_404_NOT_FOUND
-            )
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def post(self, request):
+        token = getUserToken(request)
+
+        if type(token) is Response:
+            return token
+
+        try:
+            courseId = request.data['course']
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        enrollment = Enrollment.objects.filter(
+            user=token['id'],
+            course=courseId,
+        ).first()
+
+        if enrollment:
+            # enrollment.updated_at = datetime.now()
+            enrollment.save()
+            serializer = EnrollmentSerializer(enrollment)
+            return Response(serializer.data)
+
+        return Response(status=status.HTTP_304_NOT_MODIFIED)
 
 
 class UserStatementsView(APIView):
@@ -239,10 +263,12 @@ class CompleteLessonsView(APIView):
             course=pk,
         ).first()
 
-        if enrollment:
+        if enrollment is not None:
             obj = enrollment.completeLessons().filter(lesson=lessonId).first()
 
             if obj:
+                # enrollment.updated_at = datetime.now()
+                enrollment.save()
                 if obj.result == None:
                     obj.result = result
                     obj.save()
@@ -254,10 +280,13 @@ class CompleteLessonsView(APIView):
                         "message": "Lesson already added"
                     })
 
-            request.data["enrollment"] = enrollment.id
+            # TODO: removed ".id", check the method
+            request.data["enrollment"] = enrollment
             serializer = CompleteLessonSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
+                # enrollment.updated_at = datetime.now()
+                enrollment.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
 
             return Response(
@@ -271,3 +300,84 @@ class CompleteLessonsView(APIView):
             },
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+class CertificateView(View):
+    def get(self, request: HttpRequest, pk):
+        try:
+            download = request.GET.get("download")
+        except:
+            raise
+
+        cert = Certificate.objects.filter(id=pk).first()
+
+        if cert is not None:
+            user_name = cert.user.getFullName() if cert.user is not None else None
+            title = cert.course.title if cert.course is not None else None
+            locale.setlocale(locale.LC_ALL, 'ar_SA.UTF8')
+            issue_date = cert.issued_at.strftime("%A، %d %B %Y")
+
+            data = {
+                'user_name': user_name,
+                'result': cert.result,
+                'course_title': title,
+                'issue_date': issue_date
+            }
+
+            css = os.path.join(settings.STATIC_ROOT,
+                               'css', 'dist', 'styles.css')
+
+            pdf = render_to_pdf('certificate.html', css, data)
+            response = HttpResponse(pdf, content_type='application/pdf')
+
+            filename = "certificate_%s.pdf" % (cert.id)
+
+            if download:
+                content = "attachment; filename='%s'" % (filename)
+            else:
+                content = "inline; filename='%s'" % (filename)
+
+            response['Content-Disposition'] = content
+            return response
+
+        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+
+class CertificateApiView(APIView):
+    def get(self, request: HttpRequest, pk):
+        try:
+            download = request.GET.get("download")
+        except:
+            raise
+
+        cert = Certificate.objects.filter(id=pk).first()
+
+        if cert is not None:
+            user_name = cert.user.getFullName() if cert.user is not None else None
+            title = cert.course.title if cert.course is not None else None
+            locale.setlocale(locale.LC_ALL, 'ar_SA.UTF8')
+            issue_date = cert.issued_at.strftime("%A، %d %B %Y")
+
+            data = {
+                'user_name': user_name,
+                'result': cert.result,
+                'course_title': title,
+                'issue_date': issue_date
+            }
+
+            css = os.path.join(settings.STATIC_ROOT,
+                               'css', 'dist', 'styles.css')
+
+            pdf = render_to_pdf('certificate.html', css, data)
+            response = HttpResponse(pdf, content_type='application/pdf')
+
+            filename = "certificate_%s.pdf" % (cert.id)
+
+            if download:
+                content = "attachment; filename='%s'" % (filename)
+            else:
+                content = "inline; filename='%s'" % (filename)
+
+            response['Content-Disposition'] = content
+            return response
+
+        return HttpResponse(status=status.HTTP_404_NOT_FOUND)

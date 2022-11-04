@@ -19,18 +19,24 @@ class Course(models.Model):
     )
 
     id = models.AutoField(primary_key=True)
-    title = models.CharField(null=False, blank=False, max_length=255)
-    description = models.CharField(null=False, blank=True, max_length=255)
+    title = models.CharField(null=True, blank=False,
+                             default=None, max_length=255)
+    description = models.CharField(
+        null=True, blank=True, default=None, max_length=255)
     category = models.ForeignKey(
         CourseCategory,
         on_delete=models.RESTRICT,
         db_column='category',
-        blank=False, null=False,
+        null=True, blank=True, default=None,
     )
-    imageUrl = models.CharField(null=False, blank=True, max_length=255)
-    pdfUrl = models.CharField(null=False, blank=True, max_length=255)
-    videoUrl = models.CharField(null=False, blank=True, max_length=255)
-    date = models.DateTimeField(null=False, blank=False, auto_now_add=True)
+    imageUrl = models.CharField(
+        null=True, blank=True, default=None, max_length=255)
+    pdfUrl = models.CharField(null=True, blank=True,
+                              default=None, max_length=255)
+    videoUrl = models.CharField(
+        null=True, blank=True, default=None, max_length=255)
+    date = models.DateTimeField(
+        null=True, blank=False, auto_now_add=True)
     enabled = models.BooleanField(default=True)
 
     def days(self):
