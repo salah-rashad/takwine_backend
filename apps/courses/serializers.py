@@ -1,24 +1,32 @@
-from multiprocessing.managers import BaseManager
 from operator import indexOf
-from rest_framework import serializers
-from apps.courses.models.exam import Exam
 
+from rest_framework import serializers
+
+from apps.courses.models.exam import Exam
 from apps.courses.models.lesson import Lesson
 from apps.courses.models.material import Material
+from apps.courses.models.material_file import MaterialFile
 from apps.courses.models.question import Question
 from apps.courses.models.question_choice import QuestionChoice
-from apps.users.models import Enrollment
+from takwine.serializers import TakwineFileSerializer
 
 from .models.course import Course, CourseCategory
 
 
 class CourseCategorySerializer(serializers.ModelSerializer):
+    icon = serializers.SerializerMethodField()
+
     class Meta:
         model = CourseCategory
         fields = "__all__"
 
+    def get_icon(self, instance: CourseCategory):
+        icon = instance.icon
+        return str(icon).split("icon:")[1]
+
 
 class CourseSerializer(serializers.ModelSerializer):
+    category = CourseCategorySerializer()
     # days = serializers.SerializerMethodField("calculateDays")
     # totalEnrollments = serializers.SerializerMethodField(
     #     "calculateTotalEnrollments")
@@ -38,17 +46,6 @@ class CourseSerializer(serializers.ModelSerializer):
             "days",
             "totalEnrollments",
         ]
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-
-        category_id = data['category']
-        category = CourseCategory.objects.filter(id=category_id).first()
-        if category:
-            data.update({
-                "category": CourseCategorySerializer(category).data
-            })
-        return data
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -74,8 +71,15 @@ class LessonSerializer(serializers.ModelSerializer):
                 return indexOf(lessons, item) + 1
 
 
+class MaterialFileSerializer(TakwineFileSerializer):
+    class Meta:
+        model = MaterialFile
+        fields = "__all__"
+
+
 class MaterialSerializer(serializers.ModelSerializer):
-    ordering = serializers.SerializerMethodField("getActualOrder")
+    ordering = serializers.SerializerMethodField()
+    files = MaterialFileSerializer(many=True)
 
     class Meta:
         model = Material
@@ -85,9 +89,10 @@ class MaterialSerializer(serializers.ModelSerializer):
             'title',
             'content',
             'ordering',
+            'files',
         ]
 
-    def getActualOrder(self, instance: Material):
+    def get_ordering(self, instance: Material):
         materials: list[Material] = instance.lesson.materials()
 
         for item in materials:

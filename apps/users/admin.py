@@ -1,13 +1,13 @@
 from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from apps.courses.models.course import Course
 
+from apps.courses.models.course import Course
 from apps.courses.models.lesson import Lesson
-from apps.users.intermediates import CompleteLesson
 
 from .forms import UserChangeForm, UserCreationForm
-from .models import Certificate, Enrollment, User
+from .models import (Certificate, CompleteLesson, CourseBookmark,
+                     DocumentBookmark, Enrollment, User)
 
 
 @admin.register(User)
@@ -47,7 +47,7 @@ class UserAdmin(UserAdmin):
     ordering = ['id']
 
 
-class LessonInline(admin.TabularInline):
+class CompleteLessonInline(admin.TabularInline):
     model = CompleteLesson
     extra = 0
 
@@ -74,16 +74,14 @@ class EnrollmentAdmin(admin.ModelAdmin):
     list_filter = ['created_at', 'user', 'course__title']
     list_display_links = ['user', 'course', ]
     ordering = ['id', ]
-    inlines = [LessonInline,
-               #    MaterialInline
-               ]
+    inlines = [CompleteLessonInline]
     fieldsets = [
         [None, {
-            "fields": ['user', 'course', 'currentLesson', 'currentMaterial', 'created_at', 'updated_at']
+            "fields": ['user', 'course', 'currentLesson', 'created_at', 'updated_at']
         }]
     ]
     readonly_fields = ['user', 'course', 'currentLesson',
-                       'currentMaterial', 'created_at', 'updated_at']
+                       'created_at', 'updated_at']
 
     def get_form(self, request, obj=None, **kwargs):
         # just save obj reference for future processing in Inline
@@ -96,4 +94,18 @@ class EnrollmentAdmin(admin.ModelAdmin):
 
 @admin.register(Certificate)
 class CertificateAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(CourseBookmark)
+class CourseBookmarkAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'course']
+    list_display_links = ['user', 'course', ]
+    pass
+
+
+@admin.register(DocumentBookmark)
+class DocumentBookmarkAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'document']
+    list_display_links = ['user', 'document', ]
     pass

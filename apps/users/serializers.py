@@ -1,12 +1,13 @@
 from rest_framework import serializers
 
-from apps.courses.models.material import Material
-from apps.courses.serializers import CourseSerializer, LessonSerializer
-from apps.users.intermediates import CompleteLesson
+from ..documents.serializers import DocumentSerializer
+
+from ..courses.serializers import CourseSerializer, LessonSerializer
+from ..documents.models.document import Document
 
 from ..courses.models.course import Course
 from ..courses.models.lesson import Lesson
-from .models import Enrollment, User
+from .models import Certificate, CompleteLesson, CourseBookmark, DocumentBookmark, Enrollment, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -49,6 +50,8 @@ class EnrollmentSerializer(serializers.ModelSerializer):
     # progress = serializers.SerializerMethodField("getProgress")
     # isComplete = serializers.SerializerMethodField("getIsComplete")
 
+    currentLesson = LessonSerializer()
+
     class Meta:
         model = Enrollment
         fields = [
@@ -64,26 +67,14 @@ class EnrollmentSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
 
-        # extra = {}
-
-        # converting "course" from id to actual Course object
+        # converting course from "id" to actual Course "object"
         course_id = data['course']
         course = Course.objects.filter(id=course_id).first()
-
-        # converting "currentLesson" from id to actual Lesson object
-        currentLesson_id = data['currentLesson']
-        currentLesson = Lesson.objects.filter(id=currentLesson_id).first()
-
         if course:
             data.update({
                 "course": CourseSerializer(course).data
             })
-        if currentLesson:
-            data.update({
-                "currentLesson": LessonSerializer(currentLesson).data
-            })
 
-        # data.update(extra)
         return data
 
 
@@ -91,3 +82,60 @@ class CompleteLessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompleteLesson
         fields = '__all__'
+
+
+class CertificateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Certificate
+        fields = [
+            'id',
+            'title',
+            'result',
+            'date',
+        ]
+
+
+class CourseBookmarkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseBookmark
+        fields = [
+            'id',
+            'user',
+            'course',
+        ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        # converting course from "id" to actual Course "object"
+        course_id = data['course']
+        course = Course.objects.filter(id=course_id).first()
+        if course:
+            data.update({
+                "course": CourseSerializer(course).data
+            })
+
+        return data
+
+
+class DocumentBookmarkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DocumentBookmark
+        fields = [
+            'id',
+            'user',
+            'document',
+        ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        # converting document from "id" to actual Document "object"
+        document_id = data['document']
+        document = Document.objects.filter(id=document_id).first()
+        if document:
+            data.update({
+                "document": DocumentSerializer(document).data
+            })
+
+        return data

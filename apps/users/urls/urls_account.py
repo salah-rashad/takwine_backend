@@ -1,20 +1,32 @@
 from django.urls import path
 
-from ..views.account_views import (ChangePasswordView, CompleteLessonsView,
-                                   EnrollmentsView, LastActivityView,
-                                   ProfileView, SingleEnrollmentView,
-                                   UpdateProfileImageView, UserStatementsView, CertificateView)
+from ..api.account import (CertificatesApiView, ChangePasswordApiView,
+                           CompleteLessonsApiView, CourseBookmarksApiView,
+                           DocumentBookmarksApiView, EnrollmentsApiView,
+                           LastActivityApiView, ProfileApiView,
+                           SingleCourseBookmarkApiView,
+                           SingleDocumentBookmarkApiView,
+                           SingleEnrollmentApiView,
+                           SingleEnrollmentLessonsApiView,
+                           UpdateProfileImageApiView, UserStatementsApiView)
 
 # app_name = 'users'
 
 urlpatterns = [
-    path('profile', ProfileView.as_view()),
-    path('change-password', ChangePasswordView.as_view()),
-    path('update-profile-image', UpdateProfileImageView.as_view()),
-    path("enrollments", EnrollmentsView.as_view()),
-    path("enrollments/<int:pk>", SingleEnrollmentView.as_view()),
-    path("enrollments/<int:pk>/complete-lessons", CompleteLessonsView.as_view()),
-    path("enrollments/last-activity", LastActivityView.as_view()),
-    path("statements", UserStatementsView.as_view()),
-    path("certificate/<int:pk>", CertificateView.as_view()),
+    path('profile', ProfileApiView.as_view()),
+    path('change-password', ChangePasswordApiView.as_view()),
+    path('update-profile-image', UpdateProfileImageApiView.as_view()),
+    path("enrollments", EnrollmentsApiView.as_view()),
+    path("enrollments/<int:pk>", SingleEnrollmentApiView.as_view()),
+    path("enrollments/<int:pk>/lessons",
+         SingleEnrollmentLessonsApiView.as_view()),
+    path("enrollments/<int:pk>/complete-lessons",
+         CompleteLessonsApiView.as_view()),
+    path("enrollments/last-activity", LastActivityApiView.as_view()),
+    path("statements", UserStatementsApiView.as_view()),
+    path("certificates", CertificatesApiView.as_view()),
+    path("course-bookmarks", CourseBookmarksApiView.as_view()),
+    path("course-bookmarks/<int:pk>", SingleCourseBookmarkApiView.as_view()),
+    path("document-bookmarks", DocumentBookmarksApiView.as_view()),
+    path("document-bookmarks/<int:pk>", SingleDocumentBookmarkApiView.as_view()),
 ]

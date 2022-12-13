@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # packages
+
+    ###### packages ######
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
@@ -54,9 +55,12 @@ INSTALLED_APPS = [
     'django_summernote',
     # 'static_precompiler',
     'django_pdfkit',
-    # apps
+    'faicon',
+
+    ###### apps ######
     'apps.users',
     'apps.courses',
+    'apps.documents',
 ]
 
 MIDDLEWARE = [

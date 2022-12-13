@@ -1,16 +1,17 @@
 from django.urls import path
-from apps.courses.views.courses_view import (
-    CourseCategoriesView, CoursesView, FeaturedCoursesView,)
-from apps.courses.views.single_course_view import (
-    LessonExamView, SingleCourseLessonsView, SingleCourseView, LessonSingleMaterialView)
+
+from .api.api_views import (CourseCategoriesApiView, CoursesApiView,
+                            ExamApiView, FeaturedCoursesApiView,
+                            SingleCourseApiView, SingleCourseLessonsApiView,
+                            SingleMaterialApiView)
 
 urlpatterns = [
-    path("", CoursesView.as_view()),
-    path("<int:pk>", SingleCourseView.as_view()),
-    path("<int:pk>/lessons", SingleCourseLessonsView.as_view()),
+    path("", CoursesApiView.as_view()),
+    path("<int:pk>", SingleCourseApiView.as_view()),
+    path("<int:pk>/lessons", SingleCourseLessonsApiView.as_view()),
     path("<int:c>/lessons/<int:l>/materials/<int:m>",
-         LessonSingleMaterialView.as_view()),
-    path("<int:c>/lessons/<int:l>/exam", LessonExamView.as_view()),
-    path("categories", CourseCategoriesView.as_view()),
-    path("featured", FeaturedCoursesView.as_view()),
+         SingleMaterialApiView.as_view()),
+    path("<int:c>/lessons/<int:l>/exam", ExamApiView.as_view()),
+    path("categories", CourseCategoriesApiView.as_view()),
+    path("featured", FeaturedCoursesApiView.as_view()),
 ]

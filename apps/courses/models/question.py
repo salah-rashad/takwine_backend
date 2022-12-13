@@ -6,7 +6,7 @@ from .question_choice import QuestionChoice
 class Question(models.Model):
     class Meta:
         verbose_name = "Question"
-        verbose_name_plural = "Questions"
+        verbose_name_plural = "Exam Questions"
         ordering = ['ordering']
 
     ordering = models.PositiveIntegerField(
@@ -16,8 +16,8 @@ class Question(models.Model):
         db_index=True,
     )
 
-    exam = models.ForeignKey(
-        "courses.Exam", on_delete=models.CASCADE, related_name="exam_questions")
+    lesson = models.ForeignKey(
+        "courses.Lesson", on_delete=models.CASCADE, related_name="exam_questions",)
 
     title = models.CharField(null=True, blank=False,
                              default=None, max_length=255)

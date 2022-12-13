@@ -1,6 +1,6 @@
 from django.db import models
-from apps.courses.models.lesson import Lesson
 
+from apps.courses.models.lesson import Lesson
 from apps.users.models import Enrollment
 
 from .course_category import CourseCategory
@@ -18,25 +18,18 @@ class Course(models.Model):
         db_index=True,
     )
 
-    id = models.AutoField(primary_key=True)
-    title = models.CharField(null=True, blank=False,
-                             default=None, max_length=255)
-    description = models.CharField(
-        null=True, blank=True, default=None, max_length=255)
+    title = models.CharField(null=True, blank=False, default=None, max_length=255)
+    description = models.CharField(null=True, blank=True, default=None, max_length=255)
     category = models.ForeignKey(
         CourseCategory,
-        on_delete=models.RESTRICT,
+        on_delete=models.SET_NULL,
         db_column='category',
         null=True, blank=True, default=None,
     )
-    imageUrl = models.CharField(
-        null=True, blank=True, default=None, max_length=255)
-    pdfUrl = models.CharField(null=True, blank=True,
-                              default=None, max_length=255)
-    videoUrl = models.CharField(
-        null=True, blank=True, default=None, max_length=255)
-    date = models.DateTimeField(
-        null=True, blank=False, auto_now_add=True)
+    imageUrl = models.CharField(null=True, blank=True, default=None, max_length=255)
+    pdfUrl = models.CharField(null=True, blank=True, default=None, max_length=255)
+    videoUrl = models.CharField(null=True, blank=True, default=None, max_length=255)
+    date = models.DateTimeField(null=True, blank=False, auto_now_add=True)
     enabled = models.BooleanField(default=True)
 
     def days(self):

@@ -4,8 +4,6 @@ from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from apps.users.intermediates import CompleteLesson
-
 from .managers import UserManager
 
 GENDER_CHOICES = (
@@ -66,24 +64,6 @@ class Enrollment(models.Model):
     course = models.ForeignKey(
         "courses.Course", on_delete=models.CASCADE, null=False, blank=False)
 
-    currentLesson = models.ForeignKey(
-        "courses.Lesson", on_delete=models.SET_NULL, null=True, blank=True)
-    currentMaterial = models.ForeignKey(
-        "courses.Material", on_delete=models.SET_NULL, null=True, blank=True, db_column='currentMaterialId')
-
-    # completeLessons = models.ManyToManyField(
-    #     "courses.Lesson",
-    #     related_name="enrollments",
-    #     blank=True,
-    #     through=CompleteLesson,
-    # )
-    # completeMaterials = models.ManyToManyField(
-    #     "courses.Material",
-    #     related_name="enrollments",
-    #     blank=True,
-    #     through=Rel_Enrollment_Material,
-    # )
-
     def progress(self):
         lessons = self.course.lessons().all()
         complete = self.completeLessons().all()
@@ -93,6 +73,15 @@ class Enrollment(models.Model):
         except:
             return 0.0
 
+    def getAverage(self):
+        complete = self.completeLessons().all()
+
+        total = 0
+        for item in complete:
+            total += item.result
+
+        return total / len(complete)
+
     def isComplete(self) -> bool:
         return self.progress() == 100
 
@@ -100,12 +89,17 @@ class Enrollment(models.Model):
         list = CompleteLesson.objects.filter(enrollment=self)
         return list
 
-    def save(self, *args, **kwargs):
-        if self.currentLesson is None:
-            lessons = self.course.lessons()
-            if lessons:
-                self.currentLesson = lessons.first()
+    @property
+    def currentLesson(self):
+        lessons = self.course.lessons().order_by('ordering')
+        complete = list(map(lambda x: x.lesson, self.completeLessons().all()))
+        for item in lessons:
+            if item not in complete:
+                return item
 
+        return lessons.first()
+
+    def save(self, *args, **kwargs):
         self.updated_at = datetime.now()
         super().save(*args, **kwargs)
 
@@ -113,23 +107,101 @@ class Enrollment(models.Model):
         return str(self.user) + "--" + str(self.course)
 
 
-class Certificate(models.Model):
+class CompleteLesson(models.Model):
     class Meta:
-        verbose_name = "Certificate"
-        verbose_name_plural = "Certificates"
+        verbose_name = 'Complete Lesson'
+        verbose_name_plural = 'Complete Lessons'
+        db_table = "_enrollment_lesson_"
+        unique_together = ['enrollment', 'lesson']
 
-    user = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True)
-    course = models.ForeignKey(
-        "courses.Course", on_delete=models.SET_NULL, null=True, blank=True)
-    result = models.IntegerField(
-        default=70,
+    enrollment = models.ForeignKey(
+        Enrollment, on_delete=models.CASCADE)
+    lesson = models.ForeignKey("courses.Lesson", on_delete=models.CASCADE,)
+    result = models.FloatField(
+        default=70.0,
         validators=[
             MinValueValidator(70),
             MaxValueValidator(100)
         ]
     )
-    issued_at = models.DateTimeField(null=False, blank=False, auto_now=True)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        # check if course completed
+        isComplete = self.enrollment.isComplete()
+        if isComplete:
+            # if course completed create a new
+            # certificate if not exists
+            user = self.enrollment.user
+            course = self.enrollment.course
+
+            obj = Certificate.objects.filter(user=user, course=course).first()
+
+            if obj is None:
+                certificate = Certificate()
+                certificate.user = user
+                certificate.course = course
+                certificate.result = self.enrollment.getAverage()
+                certificate.save()
+
+            print(self.enrollment.getAverage())
+
+    def __str__(self):
+        return str(self.lesson)
+
+
+class Certificate(models.Model):
+    class Meta:
+        verbose_name = "Certificate"
+        verbose_name_plural = "Certificates"
+        unique_together = ['user', 'course']
+
+    user = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True)
+    course = models.ForeignKey(
+        "courses.Course", on_delete=models.SET_NULL, null=True, blank=True)
+    result = models.FloatField(
+        default=70.0,
+        validators=[
+            MinValueValidator(70),
+            MaxValueValidator(100)
+        ]
+    )
+    date = models.DateTimeField(null=False, blank=False, auto_now=True)
+
+    def title(self):
+        return self.course.title
 
     def __str__(self):
         return str(self.user) + " | " + str(self.course)
+
+
+class CourseBookmark(models.Model):
+    class Meta:
+        verbose_name = "Course Bookmark"
+        verbose_name_plural = "Course Bookmarks"
+        unique_together = ['user', 'course']
+
+    user = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True)
+    course = models.ForeignKey(
+        "courses.Course", on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return str(self.course)
+
+
+class DocumentBookmark(models.Model):
+    class Meta:
+        verbose_name = "Document Bookmark"
+        verbose_name_plural = "Document Bookmarks"
+        unique_together = ['user', 'document']
+
+    user = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True)
+    document = models.ForeignKey(
+        "documents.Document", on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return str(self.document)

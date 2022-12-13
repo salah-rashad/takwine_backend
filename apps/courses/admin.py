@@ -4,6 +4,7 @@ from django_summernote.admin import SummernoteModelAdmin
 
 from apps.courses.forms import QuestionForm
 from apps.courses.models.exam import Exam
+from apps.courses.models.material_file import MaterialFile
 from apps.courses.models.question import Question
 from apps.courses.models.question_choice import QuestionChoice
 
@@ -22,7 +23,7 @@ class CourseAdmin(SortableAdminMixin, admin.ModelAdmin):
         model = Lesson
         extra = 0
         show_change_link = True
-        fieldsets = [[None, {"fields": ['title', 'exam', 'ordering']}]]
+        fieldsets = [[None, {"fields": ['title', 'ordering']}]]
         readonly_fields = ["exam"]
         ordering = ['ordering']
 
@@ -46,19 +47,36 @@ class LessonAdmin(SortableAdminMixin, admin.ModelAdmin):
         fieldsets = [[None, {"fields": ['title', 'ordering']}]]
         ordering = ['ordering']
 
+    class QuestionStackedInline(SortableStackedInline):
+        model = Question
+        extra = 0
+        show_change_link = True
+        fieldsets = [
+            [None, {"fields": ['title', 'ordering']}]]
+        ordering = ['ordering']
+
     list_display = ['ordering', 'title', 'days',
                     'totalMaterialsCount', 'course', 'exam']
     readonly_fields = ['exam']
-    inlines = [MaterialStackedInline]
+    inlines = [MaterialStackedInline, QuestionStackedInline]
 
 #~~~~~~~~~~~~~~~~~~~~~~~ Material ~~~~~~~~~~~~~~~~~~~~~~~#
 
 
 @admin.register(Material)
 class MaterialAdmin(SortableAdminMixin, SummernoteModelAdmin):
+    class FileStackedInline(SortableStackedInline):
+        model = MaterialFile
+        extra = 0
+        show_change_link = True
+        fieldsets = [
+            [None, {"fields": ['name', 'file', 'ordering']}]]
+        ordering = ['ordering']
+
     summernote_fields = ['content']
     list_display = ['ordering', 'id', 'title']
     readonly_fields = ['lesson']
+    inlines = [FileStackedInline]
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~ Others ~~~~~~~~~~~~~~~~~~~~~~~#
@@ -76,20 +94,20 @@ class FeaturedCourseAdmin(SortableAdminMixin, admin.ModelAdmin):
     pass
 
 
-@admin.register(Exam)
-class ExamAdmin(SortableAdminMixin, admin.ModelAdmin):
-    class QuestionStackedInline(SortableStackedInline):
-        model = Question
-        extra = 0
-        show_change_link = True
-        fieldsets = [
-            [None, {"fields": ['title', 'ordering']}]]
-        ordering = ['ordering']
+# @admin.register(Exam)
+# class ExamAdmin(SortableAdminMixin, admin.ModelAdmin):
+#     class QuestionStackedInline(SortableStackedInline):
+#         model = Question
+#         extra = 0
+#         show_change_link = True
+#         fieldsets = [
+#             [None, {"fields": ['title', 'ordering']}]]
+#         ordering = ['ordering']
 
-    list_display = ['id', 'lesson', 'course', 'ordering', ]
-    list_display_links = ['id', 'lesson']
-    readonly_fields = ['lesson']
-    inlines = [QuestionStackedInline]
+#     list_display = ['id', 'lesson', 'course', 'ordering', ]
+#     list_display_links = ['id', 'lesson']
+#     readonly_fields = ['lesson']
+#     inlines = [QuestionStackedInline]
 
 
 @admin.register(Question)
@@ -108,7 +126,7 @@ class QuestionAdmin(SortableAdminMixin, admin.ModelAdmin):
             [None, {"fields": ['name', 'ordering']}]]
         ordering = ['ordering']
 
-    readonly_fields = ['exam']
+    readonly_fields = ['lesson']
     inlines = [ChoiceStackedInline]
 
     def get_fields(self, request, obj=None):
@@ -120,3 +138,8 @@ class QuestionAdmin(SortableAdminMixin, admin.ModelAdmin):
                 messages.add_message(request, messages.WARNING,
                                      'Answer is not assigned')
         return fields
+
+
+@admin.register(MaterialFile)
+class MaterialFileAdmin(SortableAdminMixin, admin.ModelAdmin):
+    pass
