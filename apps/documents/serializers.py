@@ -8,15 +8,21 @@ from .models.document_file import DocumentFile
 
 
 class DocumentCategorySerializer(serializers.ModelSerializer):
+    icon = serializers.SerializerMethodField()
+
     class Meta:
         model = DocumentCategory
         fields = "__all__"
+
+    def get_icon(self, instance: DocumentCategory):
+        icon = instance.icon
+        return str(icon).split("icon:")[1]
 
 
 class DocumentFileSerializer(TakwineFileSerializer):
     class Meta:
         model = DocumentFile
-        fields = "__all__" 
+        fields = "__all__"
 
 
 class DocumentSerializer(serializers.ModelSerializer):

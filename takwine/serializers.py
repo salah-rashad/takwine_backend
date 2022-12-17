@@ -24,5 +24,8 @@ class TakwineFileSerializer(serializers.ModelSerializer):
         return size
 
     def get_extension(self, instance: TakwineFile):
-        name, extension = os.path.splitext(instance.file.name)
-        return extension
+        try:
+            name, extension = os.path.splitext(instance.file.name)
+            return extension.split('.')[1]
+        except:
+            return "UNKNOWN"

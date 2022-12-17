@@ -21,7 +21,7 @@ class Document(models.Model):
     )
 
     title = models.CharField(null=True, blank=False, default=None, max_length=255)
-    imageUrl = models.ImageField(null=True, blank=True, default=None, max_length=255)
+    imageUrl = models.ImageField(null=True, blank=True, default=None, max_length=255, upload_to='uploads/images/')
     category = models.ForeignKey(
         DocumentCategory,
         on_delete=models.SET_NULL,

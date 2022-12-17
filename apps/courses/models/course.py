@@ -1,9 +1,11 @@
 from django.db import models
+from django.forms import ValidationError
 
 from apps.courses.models.lesson import Lesson
 from apps.users.models import Enrollment
 
 from .course_category import CourseCategory
+from .course_file import CourseFile
 
 
 class Course(models.Model):
@@ -26,8 +28,8 @@ class Course(models.Model):
         db_column='category',
         null=True, blank=True, default=None,
     )
-    imageUrl = models.CharField(null=True, blank=True, default=None, max_length=255)
-    pdfUrl = models.CharField(null=True, blank=True, default=None, max_length=255)
+    imageUrl = models.ImageField(null=True, blank=True, default=None, max_length=255, upload_to='uploads/images/')
+    guideFile = models.ForeignKey(CourseFile, on_delete=models.SET_NULL, null=True, blank=True, related_name="courses")
     videoUrl = models.CharField(null=True, blank=True, default=None, max_length=255)
     date = models.DateTimeField(null=True, blank=False, auto_now_add=True)
     enabled = models.BooleanField(default=True)

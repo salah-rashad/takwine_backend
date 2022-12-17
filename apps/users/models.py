@@ -18,23 +18,14 @@ class User(AbstractUser, PermissionsMixin):
 
     username = None
     email = models.EmailField(max_length=255, unique=True)
-    first_name = models.CharField(
-        null=True, blank=True, default=None, max_length=255)
-    last_name = models.CharField(
-        null=True, blank=True, default=None, max_length=255)
+    first_name = models.CharField(null=True, blank=True, default=None, max_length=255)
+    last_name = models.CharField(null=True, blank=True, default=None, max_length=255)
     birthDate = models.DateField(null=False, blank=False, default=datetime.now)
-    imageUrl = models.CharField(null=True, blank=True, max_length=500)
-    phoneNumber = models.CharField(
-        null=True, blank=True, default=None, max_length=255)
-    city = models.CharField(null=True, blank=False,
-                            default=None, max_length=255)
-    job = models.CharField(null=True, blank=False,
-                           default=None, max_length=255)
-    gender = models.CharField(choices=GENDER_CHOICES,
-                              blank=True,
-                              null=True,
-                              max_length=50,
-                              )
+    imageUrl = models.ImageField(null=True, blank=True, default=None, max_length=255, upload_to='uploads/profile_images/')
+    phoneNumber = models.CharField(null=True, blank=True, default=None, max_length=255)
+    city = models.CharField(null=True, blank=True, default=None, max_length=255)
+    job = models.CharField(null=True, blank=True, default=None, max_length=255)
+    gender = models.CharField(choices=GENDER_CHOICES, blank=True, null=True, max_length=50)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

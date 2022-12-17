@@ -2,17 +2,17 @@ from adminsortable2.admin import SortableAdminMixin, SortableStackedInline
 from django.contrib import admin, messages
 from django_summernote.admin import SummernoteModelAdmin
 
-from apps.courses.forms import QuestionForm
-from apps.courses.models.exam import Exam
-from apps.courses.models.material_file import MaterialFile
-from apps.courses.models.question import Question
-from apps.courses.models.question_choice import QuestionChoice
-
+from .forms import QuestionForm
 from .models.course import Course
 from .models.course_category import CourseCategory
+from .models.course_file import CourseFile
+from .models.exam import Exam
 from .models.featured_course import FeaturedCourse
 from .models.lesson import Lesson
 from .models.material import Material
+from .models.material_file import MaterialFile
+from .models.question import Question
+from .models.question_choice import QuestionChoice
 
 #~~~~~~~~~~~~~~~~~~~~~~~ Course ~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -87,6 +87,14 @@ class CourseCategoryAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'description', 'color']
     list_display_links = ['id', 'title']
     ordering = ['id']
+
+
+@admin.register(CourseFile)
+class CourseFileAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'file']
+    list_display_links = ['id', 'name', 'file']
+    fieldsets = [
+        [None, {"fields": ['name', 'file']}]]
 
 
 @admin.register(FeaturedCourse)

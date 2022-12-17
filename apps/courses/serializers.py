@@ -1,6 +1,7 @@
 from operator import indexOf
 
 from rest_framework import serializers
+from apps.courses.models.course_file import CourseFile
 
 from apps.courses.models.exam import Exam
 from apps.courses.models.lesson import Lesson
@@ -25,8 +26,15 @@ class CourseCategorySerializer(serializers.ModelSerializer):
         return str(icon).split("icon:")[1]
 
 
+class CourseFileSerializer(TakwineFileSerializer):
+    class Meta:
+        model = CourseFile
+        fields = "__all__"
+
+
 class CourseSerializer(serializers.ModelSerializer):
     category = CourseCategorySerializer()
+    guideFile = CourseFileSerializer()
     # days = serializers.SerializerMethodField("calculateDays")
     # totalEnrollments = serializers.SerializerMethodField(
     #     "calculateTotalEnrollments")
@@ -39,7 +47,7 @@ class CourseSerializer(serializers.ModelSerializer):
             "description",
             "category",
             "imageUrl",
-            "pdfUrl",
+            "guideFile",
             "videoUrl",
             "date",
             "enabled",
