@@ -17,9 +17,8 @@ from ..serializers import UserSerializer
 
 class RegistrationApiView(APIView):
     def post(self, request):
-
         errors = {}
-
+        
         # validate password
         try:
             password = request.data.get('password')
@@ -27,7 +26,7 @@ class RegistrationApiView(APIView):
         except ValidationError as e:
             errors = {"password": e}
         except:
-            pass
+            raise
 
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():

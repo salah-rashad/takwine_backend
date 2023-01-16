@@ -1,8 +1,13 @@
+import pathlib
 from datetime import datetime
 
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.utils.safestring import mark_safe
+
+from utils.storage import OverwriteStorage
+from utils.validators import FileSizeValidator
 
 from .managers import UserManager
 
@@ -16,12 +21,17 @@ class User(AbstractUser, PermissionsMixin):
     class Meta:
         db_table = "users"
 
+    def get_uplaod_path(self, filename):
+        file_extension = pathlib.Path(filename).suffix
+        return 'uploads/profile_images/{}'.format(str(self.id)+file_extension)
+
     username = None
     email = models.EmailField(max_length=255, unique=True)
     first_name = models.CharField(null=True, blank=True, default=None, max_length=255)
     last_name = models.CharField(null=True, blank=True, default=None, max_length=255)
     birthDate = models.DateField(null=False, blank=False, default=datetime.now)
-    imageUrl = models.ImageField(null=True, blank=True, default=None, max_length=255, upload_to='uploads/profile_images/')
+    imageUrl = models.ImageField(null=True, blank=True, default=None, max_length=255, storage=OverwriteStorage(), upload_to=get_uplaod_path,
+                                 validators=[FileSizeValidator(max_size=5)], help_text="* Maximum upload file size 5 MB.")
     phoneNumber = models.CharField(null=True, blank=True, default=None, max_length=255)
     city = models.CharField(null=True, blank=True, default=None, max_length=255)
     job = models.CharField(null=True, blank=True, default=None, max_length=255)
@@ -34,6 +44,10 @@ class User(AbstractUser, PermissionsMixin):
 
     def getFullName(self):
         return str(self.first_name) + " " + str(self.last_name)
+
+    def preview(self):  # new
+        string = '<a href="{0}" target="_blank"><img src="{0}" width="180"/></a>'.format(self.imageUrl.url)
+        return mark_safe(f'{string}')
 
     def __str__(self):
         return self.email

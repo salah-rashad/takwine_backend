@@ -1,7 +1,9 @@
 from django.core.validators import FileExtensionValidator
 from django.db import models
+from django.forms import ValidationError
 
 from apps.documents.models.document_file import DocumentFile
+from utils.validators import FileSizeValidator
 
 from .document_category import DocumentCategory
 
@@ -21,7 +23,8 @@ class Document(models.Model):
     )
 
     title = models.CharField(null=True, blank=False, default=None, max_length=255)
-    imageUrl = models.ImageField(null=True, blank=True, default=None, max_length=255, upload_to='uploads/images/')
+    imageUrl = models.ImageField(null=True, blank=True, default=None, max_length=255, upload_to='uploads/images/',
+                                 validators=[FileSizeValidator(max_size=2)], help_text="* Maximum upload file size 2 MB.")
     category = models.ForeignKey(
         DocumentCategory,
         on_delete=models.SET_NULL,
@@ -36,6 +39,6 @@ class Document(models.Model):
     def files(self):
         list = DocumentFile.objects.filter(document=self)
         return list
-    
+
     def __str__(self) -> str:
         return str(self.title)

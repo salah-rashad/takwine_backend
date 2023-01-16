@@ -120,12 +120,6 @@ class FeaturedCourseAdmin(SortableAdminMixin, admin.ModelAdmin):
 
 @admin.register(Question)
 class QuestionAdmin(SortableAdminMixin, admin.ModelAdmin):
-    form = QuestionForm
-    ordering = ['ordering']
-    # fieldsets = [
-    #     [None, {"fields": ['exam', 'title', 'answer']}]
-    # ]
-
     class ChoiceStackedInline(SortableStackedInline):
         model = QuestionChoice
         extra = 0
@@ -134,8 +128,14 @@ class QuestionAdmin(SortableAdminMixin, admin.ModelAdmin):
             [None, {"fields": ['name', 'ordering']}]]
         ordering = ['ordering']
 
+    form = QuestionForm
+    ordering = ['ordering']
+    # fieldsets = [
+    #     [None, {"fields": ['exam', 'title', 'answer']}]
+    # ]
     readonly_fields = ['lesson']
     inlines = [ChoiceStackedInline]
+    list_display = ["title", "lesson", "ordering"]
 
     def get_fields(self, request, obj=None):
         fields = super().get_fields(request, obj)

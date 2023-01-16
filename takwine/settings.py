@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     # 'static_precompiler',
     'django_pdfkit',
     'faicon',
+    'django_rest_passwordreset',
 
     ###### apps ######
     'apps.users',
@@ -164,3 +165,55 @@ CORS_ALLOW_CREDENTIALS = True
 
 X_FRAME_OPTIONS = "SAMEORIGIN"
 SILENCED_SYSTEM_CHECKS = ["security.W019"]
+
+SUMMERNOTE_CONFIG = {
+    # Using SummernoteWidget - iframe mode, default
+    # 'iframe': True,
+
+    # Or, you can set it to `False` to use SummernoteInplaceWidget by default - no iframe mode
+    # In this case, you have to load Bootstrap/jQuery sources and dependencies manually.
+    # Use this when you're already using Bootstrap/jQuery based themes.
+    'iframe': True,
+    'prettifyHtml': True,
+
+    # You can put custom Summernote settings
+    'summernote': {
+        # As an example, using Summernote Air-mode
+        'airMode': False,
+
+        # Change editor size
+        'width': '100%',
+        'height': '600',
+        # 'height': None,
+        'disableResizeEditor': False,
+
+        # Use proper language setting automatically (default)
+        'lang': None,
+
+        "prettifyHtml": "true",
+        "codemirror": {
+            "mode": "text/html",
+            "htmlMode": "true",
+            "lineNumbers": "true",
+            "theme": "monokai",
+            "width": "100px",
+            "textWrapping": "true"
+        },
+    },
+
+    # Require users to be authenticated for uploading attachments.
+    'attachment_require_authentication': True,
+
+    # You can completely disable the attachment feature.
+    'disable_attachment': False,
+
+    # Set to `True` to return attachment paths in absolute URIs.
+    'attachment_absolute_uri': True,
+
+    # Lazy initialization
+    # If you want to initialize summernote at the bottom of page, set this as True
+    # and call `initSummernote()` on your page.
+    'lazy': False,
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

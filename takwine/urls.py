@@ -4,8 +4,8 @@ from django.contrib import admin
 from django.urls import include, path
 
 import apps.courses.urls as courses_urls
-import apps.users.urls.urls_account as account_urls
 import apps.documents.urls as docs_urls
+import apps.users.urls.urls_account as account_urls
 import apps.users.urls.urls_auth as auth_urls
 from apps.users.views import CertificateView
 
@@ -24,6 +24,8 @@ urlpatterns = [
     path("api/account/", include(account_urls)),
     path("api/courses/", include(courses_urls)),
     path("api/documents/", include(docs_urls)),
+    path('api/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
+
 
     ########## VIEWS ##########
     path("certificate/<int:pk>", CertificateView.as_view()),

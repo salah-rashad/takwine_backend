@@ -1,13 +1,12 @@
 from rest_framework import serializers
 
-from ..documents.serializers import DocumentSerializer
-
-from ..courses.serializers import CourseSerializer, LessonSerializer
-from ..documents.models.document import Document
-
 from ..courses.models.course import Course
 from ..courses.models.lesson import Lesson
-from .models import Certificate, CompleteLesson, CourseBookmark, DocumentBookmark, Enrollment, User
+from ..courses.serializers import CourseSerializer, LessonSerializer
+from ..documents.models.document import Document
+from ..documents.serializers import DocumentSerializer
+from .models import (Certificate, CompleteLesson, CourseBookmark,
+                     DocumentBookmark, Enrollment, User)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -139,3 +138,11 @@ class DocumentBookmarkSerializer(serializers.ModelSerializer):
             })
 
         return data
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    model = User
+
+    oldPassword = serializers.CharField(required=True)
+    newPassword = serializers.CharField(required=True)
+

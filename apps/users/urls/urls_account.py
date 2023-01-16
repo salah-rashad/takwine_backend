@@ -8,14 +8,13 @@ from ..api.account import (CertificatesApiView, ChangePasswordApiView,
                            SingleDocumentBookmarkApiView,
                            SingleEnrollmentApiView,
                            SingleEnrollmentLessonsApiView,
-                           UpdateProfileImageApiView, UserStatementsApiView)
+                           UserStatementsApiView)
 
 # app_name = 'users'
 
 urlpatterns = [
     path('profile', ProfileApiView.as_view()),
     path('change-password', ChangePasswordApiView.as_view()),
-    path('update-profile-image', UpdateProfileImageApiView.as_view()),
     path("enrollments", EnrollmentsApiView.as_view()),
     path("enrollments/<int:pk>", SingleEnrollmentApiView.as_view()),
     path("enrollments/<int:pk>/lessons",

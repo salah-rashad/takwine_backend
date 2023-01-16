@@ -15,15 +15,18 @@ class UserAdmin(UserAdmin):
     add_form = UserCreationForm
     form = UserChangeForm
     model = User
+    readonly_fields = ['preview']
     list_display_links = ['email']
     list_display = ['id', 'email', 'first_name', 'last_name',
                     'is_staff', 'is_active']
     list_filter = ['gender', 'is_superuser',
                    'is_staff', 'is_active', 'city', 'job']
     fieldsets = [
+        ['Profile Image', {
+            'fields': ['preview', 'imageUrl']}],
         ['General', {
             'fields': ['email', 'password', 'first_name',
-                       'last_name', 'birthDate', 'imageUrl',
+                       'last_name', 'birthDate',
                        'phoneNumber', 'city', 'job', 'gender']
         }],
         ['Permissions', {

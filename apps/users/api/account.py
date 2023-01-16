@@ -10,8 +10,8 @@ from utils.responses import INVALID_CREDENTIALS
 from ...courses.serializers import LessonSerializer
 from ..models import (Certificate, CourseBookmark, DocumentBookmark,
                       Enrollment, User)
-from ..serializers import (CertificateSerializer, CompleteLessonSerializer,
-                           CourseBookmarkSerializer,
+from ..serializers import (CertificateSerializer, ChangePasswordSerializer,
+                           CompleteLessonSerializer, CourseBookmarkSerializer,
                            DocumentBookmarkSerializer, EnrollmentSerializer,
                            UserSerializer)
 
@@ -33,25 +33,43 @@ class ProfileApiView(APIView):
         if type(token) is Response:
             return token
 
-        # TODO: updating profile
+        try:
+            userId = token['id']
+            user = User.objects.filter(id=userId).first()
+        except:
+            raise
 
-        pass
+        newSerializer = UserSerializer(user, data=request.data, partial=True)
+        newSerializer.is_valid(raise_exception=True)
+        newSerializer.save()
+        return Response(newSerializer.data, status=status.HTTP_200_OK)
 
 
 class ChangePasswordApiView(APIView):
-    def post(self, request):
+    def put(self, request):
+        token = getUserToken(request)
 
-        # check login credentials
+        if type(token) is Response:
+            return token
+
+        # check login credentials and request data
         try:
-            email = request.data['email']
-            oldPassword = request.data['password']
-            newPassword: str = request.data['newPassword']
+            userId = token['id']
+            user: User = User.objects.filter(id=userId).first()
+            oldPassword = request.data['oldPassword']
+            newPassword = request.data['newPassword']
 
-            user = User.objects.filter(email=email).first()
-            if user is None:
+            if user == None:
                 raise
+
+            # check if old password matches the current user's password
             if not user.check_password(oldPassword):
-                raise
+                return Response(
+                    {
+                        "oldPassword": "كلمة المرور الحالية غير صحيحة."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
         except:
             return INVALID_CREDENTIALS
 
@@ -62,29 +80,19 @@ class ChangePasswordApiView(APIView):
             user.save()
             return Response(
                 {
-                    "message": "Password changed successfully."
+                    "message": "تم تغيير كلمة المرور."
                 },
                 status=status.HTTP_200_OK
             )
-        except ValidationError as e:
-            return Response({"New Password": e}, status=status.HTTP_400_BAD_REQUEST)
+        except ValidationError as error:
+            return Response({"newPassword": error}, status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response(
                 {
-                    "message": "An error occurred while changing your password, please check your new password."
+                    "message": "حدث خطأ ما أثناء تغيير كلمة المرور، يرجى التأكد من البيانات."
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
-
-
-class UpdateProfileImageApiView(APIView):
-    def put(self, request):
-        token = getUserToken(request)
-
-        if type(token) is Response:
-            return token
-
-        pass
 
 
 class EnrollmentsApiView(APIView):
@@ -203,7 +211,7 @@ class LastActivityApiView(APIView):
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-    def post(self, request):
+    def put(self, request):
         token = getUserToken(request)
 
         if type(token) is Response:
@@ -257,7 +265,18 @@ class UserStatementsApiView(APIView):
         })
 
     def getCertificatesRateAverage(self, userId) -> str:
-        return "3.5/5"     # TODO:
+        certificates = Certificate.objects.filter(user=userId)
+
+        if not certificates:
+            return None
+
+        totalSum = 0
+        for cert in certificates:
+            totalSum += cert.result
+
+        avarage = totalSum / len(certificates)
+        rate = (avarage / 100) * 5
+        return "{0:.1f}/5".format(rate)
 
 
 class CompleteLessonsApiView(APIView):
