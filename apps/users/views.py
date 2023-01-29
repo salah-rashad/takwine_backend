@@ -6,8 +6,9 @@ from django.http import FileResponse, HttpRequest, HttpResponse
 from django.views import View
 from rest_framework import status
 
-from apps.users.models import Certificate
 from utils.render_to_pdf import render_to_pdf
+
+from .models import Certificate
 
 
 class CertificateView(View):

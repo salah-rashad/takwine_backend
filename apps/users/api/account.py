@@ -7,8 +7,8 @@ from rest_framework.views import APIView
 from utils.helpers import getUserToken
 from utils.responses import INVALID_CREDENTIALS
 
-from ...courses.serializers import LessonSerializer
-from ..models import (Certificate, CourseBookmark, DocumentBookmark,
+from apps.courses.serializers import LessonSerializer
+from apps.users.models import (Certificate, CourseBookmark, DocumentBookmark,
                       Enrollment, User)
 from ..serializers import (CertificateSerializer, ChangePasswordSerializer,
                            CompleteLessonSerializer, CourseBookmarkSerializer,

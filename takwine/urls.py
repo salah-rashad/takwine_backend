@@ -26,7 +26,6 @@ urlpatterns = [
     path("api/documents/", include(docs_urls)),
     path('api/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
 
-
     ########## VIEWS ##########
     path("certificate/<int:pk>", CertificateView.as_view()),
 ]
