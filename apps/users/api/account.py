@@ -264,17 +264,17 @@ class UserStatementsApiView(APIView):
             "rate": rate,
         })
 
-    def getCertificatesRateAverage(self, userId) -> str:
+    def getCertificatesRateAverage(self, userId) -> str | None:
         certificates = Certificate.objects.filter(user=userId)
 
         if not certificates:
             return None
 
-        totalSum = 0
+        total_sum = 0
         for cert in certificates:
-            totalSum += cert.result
+            total_sum += cert.result
 
-        avarage = totalSum / len(certificates)
+        avarage = total_sum / len(certificates)
         rate = (avarage / 100) * 5
         return "{0:.1f}/5".format(rate)
 
@@ -333,7 +333,7 @@ class CompleteLessonsApiView(APIView):
                         "message": "Lesson already added"
                     })
 
-            # if object doesn't exists create a new one
+            # if object doesn't exist create a new one
             data = {}
             data = dict(request.data)
             data["enrollment"] = enrollment.id

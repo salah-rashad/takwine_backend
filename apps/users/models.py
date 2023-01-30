@@ -133,10 +133,10 @@ class CompleteLesson(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        # check if course completed
+        # check if the course is completed
         isComplete = self.enrollment.isComplete()
         if isComplete:
-            # if course completed create a new
+            # if the course is completed create a new
             # certificate if not exists
             user = self.enrollment.user
             course = self.enrollment.course

@@ -38,7 +38,7 @@ SIMPLE_JWT = {
 
 INSTALLED_APPS = [
     'admin_interface',
-    # 'admin_volt.apps.AdminVoltConfig',
+    'colorfield',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,14 +49,12 @@ INSTALLED_APPS = [
     ###### packages ######
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_rest_passwordreset',
     'corsheaders',
     'adminsortable2',
-    'colorfield',
     'django_summernote',
-    # 'static_precompiler',
     'django_pdfkit',
     'faicon',
-    'django_rest_passwordreset',
 
     ###### apps ######
     'apps.users',
