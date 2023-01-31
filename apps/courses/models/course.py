@@ -47,7 +47,7 @@ class Course(CloneMixin, models.Model):
     def lessons_count(self):
         return len(self.lessons().all())
 
-    def totalEnrollments(self):
+    def total_enrollments(self):
         enrollments = Enrollment.objects.filter(course__id=self.id)
         return enrollments.count()
 

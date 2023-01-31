@@ -27,7 +27,7 @@ class Lesson(CloneMixin, models.Model):
     exam = models.ForeignKey(
         Exam, on_delete=models.CASCADE, related_name="lessons", null=True)
 
-    def totalMaterialsCount(self):
+    def total_materials_count(self):
         return len(self.materials().all())
 
     # def related_courses(self):

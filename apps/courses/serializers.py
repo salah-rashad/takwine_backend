@@ -52,7 +52,7 @@ class CourseSerializer(serializers.ModelSerializer):
             "date",
             "enabled",
             "days",
-            "totalEnrollments",
+            "total_enrollments",
         ]
 
 
@@ -67,7 +67,7 @@ class LessonSerializer(serializers.ModelSerializer):
             'title',
             'description',
             'days',
-            'totalMaterialsCount',
+            'total_materials_count',
             'ordering',
         ]
 

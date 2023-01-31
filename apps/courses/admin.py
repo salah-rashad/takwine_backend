@@ -29,7 +29,7 @@ class CourseAdmin(SortableAdminMixin, CloneModelAdminMixin, admin.ModelAdmin):
         ordering = ['ordering']
 
     list_display = ['id', 'title', 'category', 'lessons_count', 'days',
-                    'enabled', 'totalEnrollments', 'ordering']
+                    'enabled', 'total_enrollments', 'ordering']
     list_filter = ['enabled', 'category__title', ]
     list_display_links = ['id', 'title', ]
     search_fields = ['id', 'title', 'category', 'enabled', ]
@@ -57,7 +57,7 @@ class LessonAdmin(SortableAdminMixin, CloneModelAdminMixin, admin.ModelAdmin):
         ordering = ['ordering']
 
     list_display = ['ordering', 'title', 'days',
-                    'totalMaterialsCount', 'course', 'exam']
+                    'total_materials_count', 'course',]
     readonly_fields = ['exam']
     inlines = [MaterialStackedInline, QuestionStackedInline]
 
@@ -150,5 +150,5 @@ class QuestionAdmin(SortableAdminMixin, CloneModelAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(MaterialFile)
-class MaterialFileAdmin(SortableAdminMixin,CloneModelAdminMixin, admin.ModelAdmin):
+class MaterialFileAdmin(SortableAdminMixin, CloneModelAdminMixin, admin.ModelAdmin):
     pass
