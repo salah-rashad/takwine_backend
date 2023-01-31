@@ -1,6 +1,7 @@
 from adminsortable2.admin import SortableAdminMixin, SortableStackedInline
 from django.contrib import admin, messages
 from django_summernote.admin import SummernoteModelAdmin
+from model_clone import CloneModelAdminMixin
 
 from .forms import QuestionForm
 from .models.course import Course
@@ -14,11 +15,11 @@ from .models.material_file import MaterialFile
 from .models.question import Question
 from .models.question_choice import QuestionChoice
 
-#~~~~~~~~~~~~~~~~~~~~~~~ Course ~~~~~~~~~~~~~~~~~~~~~~~#
+# ~~~~~~~~~~~~~~~~~~~~~~~ Course ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 
 @admin.register(Course)
-class CourseAdmin(SortableAdminMixin, admin.ModelAdmin):
+class CourseAdmin(SortableAdminMixin, CloneModelAdminMixin, admin.ModelAdmin):
     class LessonStackedInline(SortableStackedInline):
         model = Lesson
         extra = 0
@@ -28,18 +29,18 @@ class CourseAdmin(SortableAdminMixin, admin.ModelAdmin):
         ordering = ['ordering']
 
     list_display = ['id', 'title', 'category', 'lessons_count', 'days',
-                    'enabled', 'totalEnrollments',  'ordering', ]
+                    'enabled', 'totalEnrollments', 'ordering']
     list_filter = ['enabled', 'category__title', ]
     list_display_links = ['id', 'title', ]
     search_fields = ['id', 'title', 'category', 'enabled', ]
     inlines = [LessonStackedInline]
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~ Lesson ~~~~~~~~~~~~~~~~~~~~~~~#
+# ~~~~~~~~~~~~~~~~~~~~~~~ Lesson ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 
 @admin.register(Lesson)
-class LessonAdmin(SortableAdminMixin, admin.ModelAdmin):
+class LessonAdmin(SortableAdminMixin, CloneModelAdminMixin, admin.ModelAdmin):
     class MaterialStackedInline(SortableStackedInline):
         model = Material
         extra = 0
@@ -60,11 +61,11 @@ class LessonAdmin(SortableAdminMixin, admin.ModelAdmin):
     readonly_fields = ['exam']
     inlines = [MaterialStackedInline, QuestionStackedInline]
 
-#~~~~~~~~~~~~~~~~~~~~~~~ Material ~~~~~~~~~~~~~~~~~~~~~~~#
+# ~~~~~~~~~~~~~~~~~~~~~~~ Material ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 
 @admin.register(Material)
-class MaterialAdmin(SortableAdminMixin, SummernoteModelAdmin):
+class MaterialAdmin(SortableAdminMixin, CloneModelAdminMixin, SummernoteModelAdmin):
     class FileStackedInline(SortableStackedInline):
         model = MaterialFile
         extra = 0
@@ -79,11 +80,11 @@ class MaterialAdmin(SortableAdminMixin, SummernoteModelAdmin):
     inlines = [FileStackedInline]
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~ Others ~~~~~~~~~~~~~~~~~~~~~~~#
+# ~~~~~~~~~~~~~~~~~~~~~~~ Others ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 
 @admin.register(CourseCategory)
-class CourseCategoryAdmin(admin.ModelAdmin):
+class CourseCategoryAdmin(CloneModelAdminMixin, admin.ModelAdmin):
     list_display = ['id', 'title', 'description', 'color']
     list_display_links = ['id', 'title']
     ordering = ['id']
@@ -119,7 +120,7 @@ class FeaturedCourseAdmin(SortableAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(Question)
-class QuestionAdmin(SortableAdminMixin, admin.ModelAdmin):
+class QuestionAdmin(SortableAdminMixin, CloneModelAdminMixin, admin.ModelAdmin):
     class ChoiceStackedInline(SortableStackedInline):
         model = QuestionChoice
         extra = 0
@@ -149,5 +150,5 @@ class QuestionAdmin(SortableAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(MaterialFile)
-class MaterialFileAdmin(SortableAdminMixin, admin.ModelAdmin):
+class MaterialFileAdmin(SortableAdminMixin,CloneModelAdminMixin, admin.ModelAdmin):
     pass

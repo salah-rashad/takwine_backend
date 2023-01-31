@@ -1,9 +1,10 @@
 from colorfield.fields import ColorField
 from django.db import models
 from faicon.fields import FAIconField
+from model_clone import CloneMixin
 
 
-class CourseCategory(models.Model):
+class CourseCategory(CloneMixin, models.Model):
     class Meta:
         db_table = "course_categories"
         verbose_name = 'Course Category'

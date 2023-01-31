@@ -1,9 +1,10 @@
 from django.db import models
+from model_clone import CloneMixin
 
 from utils.validators import FileSizeValidator
 
 
-class TakwineFile(models.Model):
+class TakwineFile(CloneMixin, models.Model):
     class Meta:
         abstract = True
         db_table = "files"

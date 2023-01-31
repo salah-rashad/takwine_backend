@@ -1,7 +1,8 @@
 from django.db import models
 from django.forms import ValidationError
-from apps.users.models import Enrollment
+from model_clone import CloneMixin
 
+from apps.users.models import Enrollment
 from utils.validators import FileSizeValidator
 
 from .course_category import CourseCategory
@@ -9,7 +10,7 @@ from .course_file import CourseFile
 from .lesson import Lesson
 
 
-class Course(models.Model):
+class Course(CloneMixin, models.Model):
     class Meta:
         db_table = "courses"
         ordering = ['ordering', ]

@@ -1,10 +1,11 @@
 from django.db import models
+from model_clone import CloneMixin
 
 from .exam import Exam
 from .material import Material
 
 
-class Lesson(models.Model):
+class Lesson(CloneMixin, models.Model):
     class Meta:
         verbose_name = 'Lesson'
         verbose_name_plural = 'Lessons'

@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.utils.translation import gettext_lazy as _
 
 from apps.courses.models.course import Course
 from apps.courses.models.lesson import Lesson
@@ -22,29 +23,88 @@ class UserAdmin(UserAdmin):
     list_filter = ['gender', 'is_superuser',
                    'is_staff', 'is_active', 'city', 'job']
     fieldsets = [
-        ['Profile Image', {
-            'fields': ['preview', 'imageUrl']}],
-        ['General', {
-            'fields': ['email', 'password', 'first_name',
-                       'last_name', 'birthDate',
-                       'phoneNumber', 'city', 'job', 'gender']
-        }],
-        ['Permissions', {
-            'fields': ['is_active', 'is_superuser', 'is_staff']
-        }],
+        (
+            _('Profile Image'),
+            {
+                'fields': (
+                    'preview',
+                    'imageUrl',
+                )
+            }
+        ),
+        (
+            _('General'),
+            {
+                'fields': (
+                    'email',
+                    'password',
+                    'first_name',
+                    'last_name',
+                    'birthDate',
+                    'phoneNumber',
+                    'city',
+                    'job',
+                    'gender',
+                )
+            }
+        ),
+        (
+            _("Permissions"),
+            {
+                "fields": [
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                ],
+            }
+        ),
     ]
     add_fieldsets = [
-        ['General', {
-            'classes': ['wide', ],
-            'fields': ['email', 'password1', 'password2', 'birthDate']
-        }],
-        ['Optional', {
-            'classes': ['wide', ],
-            'fields': ['first_name', 'last_name', 'imageUrl', 'phoneNumber', 'city', 'job', 'gender']
-        }],
-        ['Permissions', {
-            'fields': ['is_active', 'is_staff']
-        }],
+        (
+            _('General'),
+            {
+                'classes': (
+                    'wide',
+                ),
+                'fields': (
+                    'email',
+                    'password1',
+                    'password2',
+                    'birthDate',
+                ),
+            }
+        ),
+        (
+            _("Optional"),
+            {
+                'classes': (
+                    'wide',
+                ),
+                'fields': (
+                    'first_name',
+                    'last_name',
+                    'imageUrl',
+                    'phoneNumber',
+                    'city',
+                    'job',
+                    'gender',
+                ),
+            }
+        ),
+        (
+            _("Permissions"),
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                ),
+            }
+        ),
     ]
     search_fields = ['id', 'email', 'first_name', 'last_name']
     ordering = ['id']

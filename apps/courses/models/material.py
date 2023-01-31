@@ -1,9 +1,10 @@
 from django.db import models
+from model_clone import CloneMixin
 
 from .material_file import MaterialFile
 
 
-class Material(models.Model):
+class Material(CloneMixin, models.Model):
     class Meta:
         verbose_name = 'Material'
         verbose_name_plural = 'Materials'

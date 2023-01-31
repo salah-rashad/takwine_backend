@@ -37,6 +37,7 @@ SIMPLE_JWT = {
 # Application definition
 
 INSTALLED_APPS = [
+    'model_clone',
     'admin_interface',
     'colorfield',
     'django.contrib.admin',

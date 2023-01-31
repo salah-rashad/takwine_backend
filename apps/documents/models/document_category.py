@@ -1,9 +1,10 @@
 from colorfield.fields import ColorField
 from django.db import models
 from faicon.fields import FAIconField
+from model_clone import CloneMixin
 
 
-class DocumentCategory(models.Model):
+class DocumentCategory(CloneMixin, models.Model):
     class Meta:
         db_table = "document_categories"
         verbose_name = 'Document Category'

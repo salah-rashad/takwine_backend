@@ -1,6 +1,7 @@
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.forms import ValidationError
+from model_clone import CloneMixin
 
 from apps.documents.models.document_file import DocumentFile
 from utils.validators import FileSizeValidator
@@ -8,7 +9,7 @@ from utils.validators import FileSizeValidator
 from .document_category import DocumentCategory
 
 
-class Document(models.Model):
+class Document(CloneMixin, models.Model):
     class Meta:
         db_table = "documents"
         verbose_name = 'Document'

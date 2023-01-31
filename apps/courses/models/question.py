@@ -1,9 +1,10 @@
 from django.db import models
+from model_clone import CloneMixin
 
 from .question_choice import QuestionChoice
 
 
-class Question(models.Model):
+class Question(CloneMixin, models.Model):
     class Meta:
         verbose_name = "Question"
         verbose_name_plural = "Exam Questions"
