@@ -14,7 +14,8 @@ def render_to_pdf(template_src: str, css_src: str, data: dict = {}):
     })
     html = template.render(data)
 
-    servicePath = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+    # servicePath = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+    servicePath = r'/usr/bin/wkhtmltopdf'
     config = pdfkit.configuration(wkhtmltopdf=servicePath)
 
     options = {
