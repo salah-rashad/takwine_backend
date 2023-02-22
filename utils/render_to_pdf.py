@@ -8,7 +8,7 @@ from django.template.loader import get_template
 from rest_framework import status
 
 
-def render_to_pdf(template_src: str, css_src: str = None, data: dict = {}):
+def render_to_pdf(template_src: str, css_src=None, data: dict = {}):
     template = get_template(template_src)
     data.update({
         "media_path": settings.MEDIA_ROOT,
@@ -24,7 +24,7 @@ def render_to_pdf(template_src: str, css_src: str = None, data: dict = {}):
         'page-size': 'Letter',
         'encoding': 'UTF-8',
         'orientation': 'landscape',
-        'enable-local-file-access': True,
+        'enable-local-file-access': None,
     }
     pdf = pdfkit.from_string(
         html, False, options=options, configuration=config, css=css_src)
