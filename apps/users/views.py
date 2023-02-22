@@ -34,7 +34,7 @@ class CertificateView(View):
             }
 
             css = os.path.join(settings.MEDIA_ROOT,
-                               'css', 'dist', 'styles.css')
+                               'css', 'styles.css')
 
             pdf = render_to_pdf('certificate.html', css_src=css, data=data)
 
