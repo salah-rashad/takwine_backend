@@ -33,11 +33,11 @@ class CertificateView(View):
                 'issue_date': date
             }
 
-            # css = os.path.join(settings.MEDIA_ROOT, 'css', 'styles.css')
+            css = os.path.join(settings.STATIC_ROOT, 'certificate_req', 'css', 'styles.css')
 
             pdf = render_to_pdf(
                 'certificate.html',
-                # css_src=css,
+                css_src=css,
                 data=data
             )
 
