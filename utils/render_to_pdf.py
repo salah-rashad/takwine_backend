@@ -11,7 +11,8 @@ from rest_framework import status
 def render_to_pdf(template_src: str, css_src: str = None, data: dict = {}):
     template = get_template(template_src)
     data.update({
-        "media_path": settings.MEDIA_ROOT
+        "media_path": settings.MEDIA_ROOT,
+        "static_path": settings.STATIC_ROOT,
     })
     html = template.render(data)
 
