@@ -3,68 +3,68 @@
   font-style: normal;
   font-weight: 400;
   font-stretch: normal;
-  src: url(https://fonts.gstatic.com/s/opensans/v34/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.ttf) format('truetype');
+  src: url(./fonts/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Pinyon Script';
   font-style: normal;
   font-weight: 400;
-  src: url(https://fonts.gstatic.com/s/pinyonscript/v17/6xKpdSJbL9-e9LuoeQiDRQR8WOXaPw.ttf) format('truetype');
+  src: url(./fonts/6xKpdSJbL9-e9LuoeQiDRQR8WOXaPw.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Rochester';
   font-style: normal;
   font-weight: 400;
-  src: url(https://fonts.gstatic.com/s/rochester/v18/6ae-4KCqVa4Zy6Fif-UC2FHS.ttf) format('truetype');
+  src: url(./fonts/6ae-4KCqVa4Zy6Fif-UC2FHS.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Almarai';
   font-style: normal;
   font-weight: 300;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/almarai/v12/tssoApxBaigK_hnnS_anhng.ttf) format('truetype');
+  src: url(./fonts/tssoApxBaigK_hnnS_anhng.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Almarai';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/almarai/v12/tsstApxBaigK_hnnc1o.ttf) format('truetype');
+  src: url(./fonts/tsstApxBaigK_hnnc1o.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Almarai';
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/almarai/v12/tssoApxBaigK_hnnS-aghng.ttf) format('truetype');
+  src: url(./fonts/tssoApxBaigK_hnnS-aghng.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Almarai';
   font-style: normal;
   font-weight: 800;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/almarai/v12/tssoApxBaigK_hnnS_qjhng.ttf) format('truetype');
+  src: url(./fonts/tssoApxBaigK_hnnS_qjhng.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Amiri';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/amiri/v24/J7aRnpd8CGxBHqUp.ttf) format('truetype');
+  src: url(./fonts/J7aRnpd8CGxBHqUp.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Noto Kufi Arabic';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/notokufiarabic/v15/CSRp4ydQnPyaDxEXLFF6LZVLKrodhu8t57o1kDc5Wh5v34bP.ttf) format('truetype');
+  src: url(./fonts/CSRp4ydQnPyaDxEXLFF6LZVLKrodhu8t57o1kDc5Wh5v34bP.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Aref Ruqaa';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/arefruqaa/v23/WwkbxPW1E165rajQKDulEIA.ttf) format('truetype');
+  src: url(./fonts/WwkbxPW1E165rajQKDulEIA.ttf) format('truetype');
 }
 .cursive {
   font-family: 'Pinyon Script', cursive;
