@@ -22,9 +22,9 @@ def render_to_pdf(template_src: str, css_src: str = None, data: dict = {}):
 
     options = {
         'page-size': 'Letter',
-        'encoding': "UTF-8",
+        'encoding': 'UTF-8',
         'orientation': 'landscape',
-        "enable-local-file-access": None,
+        'enable-local-file-access': True,
     }
     pdf = pdfkit.from_string(
         html, False, options=options, configuration=config, css=css_src)

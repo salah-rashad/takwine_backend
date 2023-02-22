@@ -3,21 +3,21 @@
   font-style: normal;
   font-weight: 400;
   font-stretch: normal;
-  src: url(home/salahr/takwine_backend/static/certificate_req/fonts/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.ttf) format('truetype');
+  src: url(/home/salahr/takwine_backend/static/certificate_req/fonts/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVc.ttf) format('truetype');
 }
 
 @font-face {
   font-family: 'Pinyon Script';
   font-style: normal;
   font-weight: 400;
-  src: url(home/salahr/takwine_backend/static/certificate_req/fonts/6xKpdSJbL9-e9LuoeQiDRQR8WOXaPw.ttf) format('truetype');
+  src: url(/home/salahr/takwine_backend/static/certificate_req/fonts/6xKpdSJbL9-e9LuoeQiDRQR8WOXaPw.ttf) format('truetype');
 }
 
 @font-face {
   font-family: 'Rochester';
   font-style: normal;
   font-weight: 400;
-  src: url(home/salahr/takwine_backend/static/certificate_req/fonts/6ae-4KCqVa4Zy6Fif-UC2FHS.ttf) format('truetype');
+  src: url(/home/salahr/takwine_backend/static/certificate_req/fonts/6ae-4KCqVa4Zy6Fif-UC2FHS.ttf) format('truetype');
 }
 
 @font-face {
@@ -25,7 +25,7 @@
   font-style: normal;
   font-weight: 300;
   font-display: swap;
-  src: url(home/salahr/takwine_backend/static/certificate_req/fonts/tssoApxBaigK_hnnS_anhng.ttf) format('truetype');
+  src: url(/home/salahr/takwine_backend/static/certificate_req/fonts/tssoApxBaigK_hnnS_anhng.ttf) format('truetype');
 }
 
 @font-face {
@@ -33,7 +33,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(home/salahr/takwine_backend/static/certificate_req/fonts/tsstApxBaigK_hnnc1o.ttf) format('truetype');
+  src: url(/home/salahr/takwine_backend/static/certificate_req/fonts/tsstApxBaigK_hnnc1o.ttf) format('truetype');
 }
 
 @font-face {
@@ -41,7 +41,7 @@
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url(home/salahr/takwine_backend/static/certificate_req/fonts/tssoApxBaigK_hnnS-aghng.ttf) format('truetype');
+  src: url(/home/salahr/takwine_backend/static/certificate_req/fonts/tssoApxBaigK_hnnS-aghng.ttf) format('truetype');
 }
 
 @font-face {
@@ -49,7 +49,7 @@
   font-style: normal;
   font-weight: 800;
   font-display: swap;
-  src: url(home/salahr/takwine_backend/static/certificate_req/fonts/tssoApxBaigK_hnnS_qjhng.ttf) format('truetype');
+  src: url(/home/salahr/takwine_backend/static/certificate_req/fonts/tssoApxBaigK_hnnS_qjhng.ttf) format('truetype');
 }
 
 @font-face {
@@ -57,7 +57,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(home/salahr/takwine_backend/static/certificate_req/fonts/J7aRnpd8CGxBHqUp.ttf) format('truetype');
+  src: url(/home/salahr/takwine_backend/static/certificate_req/fonts/J7aRnpd8CGxBHqUp.ttf) format('truetype');
 }
 
 @font-face {
@@ -65,7 +65,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(home/salahr/takwine_backend/static/certificate_req/fonts/CSRp4ydQnPyaDxEXLFF6LZVLKrodhu8t57o1kDc5Wh5v34bP.ttf) format('truetype');
+  src: url(/home/salahr/takwine_backend/static/certificate_req/fonts/CSRp4ydQnPyaDxEXLFF6LZVLKrodhu8t57o1kDc5Wh5v34bP.ttf) format('truetype');
 }
 
 @font-face {
@@ -73,7 +73,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(home/salahr/takwine_backend/static/certificate_req/fonts/WwkbxPW1E165rajQKDulEIA.ttf) format('truetype');
+  src: url(/home/salahr/takwine_backend/static/certificate_req/fonts/WwkbxPW1E165rajQKDulEIA.ttf) format('truetype');
 }
 
 .cursive {
