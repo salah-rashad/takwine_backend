@@ -11,7 +11,15 @@
     "takwine",
     "wkhtmltopdf"
   ],
-  "window.zoomLevel": 0,
   "compile-hero.disable-compile-files-on-did-save-code": false,
   "python.analysis.typeCheckingMode": "off",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true
+  },
+  "hide-files.files": [],
 }
