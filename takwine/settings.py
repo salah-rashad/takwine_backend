@@ -15,7 +15,7 @@ SECRET_KEY = 'django-insecure-*3ib*1!*_hk0wfkn*5csxfi=*c(8b6xe1gfvz00jmmxx7odx@_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.1.10", "127.0.0.1", "localhost", "salahr.pythonanywhere.com"]
+ALLOWED_HOSTS = ["192.168.1.10", "127.0.0.1", "localhost", "salahr.pythonanywhere.com", '.onrender.com']
 
 REST_FRAMEWORK = {
     # # Use Django's standard `django.contrib.auth` permissions,
@@ -74,6 +74,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
 ]
+
+# Use WhiteNoise
+MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
 ROOT_URLCONF = 'takwine.urls'
 
