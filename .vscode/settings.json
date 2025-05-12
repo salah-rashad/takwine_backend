@@ -2,8 +2,12 @@
   "cSpell.words": [
     "adminsortable",
     "Almarai",
+    "asgi",
     "corsheaders",
+    "djangorestframework",
+    "faicon",
     "markdownx",
+    "passwordreset",
     "pdfkit",
     "precompiler",
     "simplejwt",
@@ -22,4 +26,9 @@
     "**/Thumbs.db": true
   },
   "hide-files.files": [],
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "python.formatting.provider": "black",
+  "python.analysis.autoImportCompletions": true,
 }

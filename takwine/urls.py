@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.shortcuts import redirect
 from django.urls import include, path
 
 import apps.courses.urls as courses_urls
@@ -13,6 +14,7 @@ admin.autodiscover()
 # admin.site.enable_nav_sidebar = False
 
 urlpatterns = [
+    path('', lambda req: redirect('admin/')),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
 
