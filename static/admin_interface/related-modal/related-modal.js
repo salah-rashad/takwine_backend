@@ -70,7 +70,7 @@ if (typeof(django) !== 'undefined' && typeof(django.jQuery) !== 'undefined')
                     }
                 }
 
-                // fix for django 1.7
+                // fix for django 1.7  TODO remove
                 if (iframeSrc.indexOf('_popup=1') === -1) {
                     if (iframeSrc.indexOf('?') === -1) {
                         iframeSrc += '?_popup=1';
@@ -125,20 +125,19 @@ if (typeof(django) !== 'undefined' && typeof(django.jQuery) !== 'undefined')
                 var data = {
                     lookup:(lookup === true ? true : false)
                 };
+                // remove potential existing click event listener
                 var el = $(selector);
                 el.removeAttr('onclick');
                 el.unbind('click');
                 el.click(data, presentRelatedObjectModal);
+                // listen the event on document for handling it on elements will be added to the DOM later
+                $(document).on('click', selector, data, presentRelatedObjectModal);
             }
 
             // assign functions to global variables
             window.presentRelatedObjectModal = presentRelatedObjectModal;
             window.presentRelatedObjectModalOnClickOn = presentRelatedObjectModalOnClickOn;
 
-            // django 1.7 compatibility
-            presentRelatedObjectModalOnClickOn('a.add-another');
-
-            // django 1.8 and above
             presentRelatedObjectModalOnClickOn('a.related-widget-wrapper-link');
 
             // raw_id_fields support
